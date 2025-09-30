@@ -347,10 +347,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       removedPhotos = [];
       updateFileCount();
 
-      // Si fue actualización, redirigir a Menu.html
+      // Si fue actualización, redirigir a menu.html
       if (inmuebleId) {
         setTimeout(() => {
-          window.location.href = "Menu.html";
+          window.location.href = "menu.html";
         }, 1500);
       }
 
