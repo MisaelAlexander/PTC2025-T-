@@ -12,10 +12,10 @@ import {
   eliminarFoto              
 } from "../Service/PublicarService.js";
 
+import { guardarHistorial } from "../Service/HistorialService.js";
 import { requireAuth, role, auth } from "./SessionController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-
 
   const ok = await requireAuth({ redirect: true });
   if (!ok || !role.isVendedor()) {
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const usuario = auth.user;  // usamos el user de la sesión en vez de localStorage
+  const usuario = auth.user;
 
   const form = document.getElementById("formPublicar");
   const selectTipo = document.getElementById("idtipo");
@@ -41,6 +41,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const params = new URLSearchParams(window.location.search);
   if (params.has("id")) inmuebleId = params.get("id");
+
+  /* =====================
+      Función genérica para guardar historial
+  ===================== */
+  async function guardarAccionHistorial(accion, titulo, idUsuario) {
+    try {
+      const ahora = new Date();
+      const fechaHora = ahora.toLocaleString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      const datosHistorial = {
+        descripcion: `${accion} inmueble: ${titulo} - ${fechaHora}`,
+        fecha: ahora.toISOString(),
+        idUsuario: idUsuario
+      };
+
+      await guardarHistorial(datosHistorial);
+      console.log("Historial guardado:", datosHistorial);
+    } catch (error) {
+      console.error("Error al guardar historial:", error);
+    }
+  }
 
   /* =====================
       Cargar combos dinámicos
@@ -80,7 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     mostrarNotificacion("Error cargando datos iniciales", "error");
   }
-/* =====================
+
+  /* =====================
       Mapa con Leaflet
   ===================== */
   const map = L.map("map").setView([13.6929, -89.2182], 13);
@@ -117,43 +145,40 @@ document.addEventListener("DOMContentLoaded", async () => {
   map.on('locationerror', e => {
     mostrarNotificacion("Error al obtener la ubicación: " + e.message, "error");
   });
-/* =====================
+
+  /* =====================
       Cargar datos si es edición
   ===================== */
-if (inmuebleId) {
-  try {
-    const res = await obtenerInmueblePorId(inmuebleId);
-    const data = res.data;
+  if (inmuebleId) {
+    try {
+      const res = await obtenerInmueblePorId(inmuebleId);
+      const data = res.data;
 
-    document.getElementById("titulo").value = data.titulo;
-    document.getElementById("descripcion").value = data.descripcion;
-    document.getElementById("precio").value = data.precio;
-    selectTipo.value = data.idtipo;
-    selectUbi.value = data.idubicacion;
-    selectBanios.value = data.idbanios;
-    selectHab.value = data.idhabitaciones;
-    document.getElementById("latitud").value = data.latitud;
-    document.getElementById("longitud").value = data.longitud;
+      document.getElementById("titulo").value = data.titulo;
+      document.getElementById("descripcion").value = data.descripcion;
+      document.getElementById("precio").value = data.precio;
+      selectTipo.value = data.idtipo;
+      selectUbi.value = data.idubicacion;
+      selectBanios.value = data.idbanios;
+      selectHab.value = data.idhabitaciones;
+      document.getElementById("latitud").value = data.latitud;
+      document.getElementById("longitud").value = data.longitud;
 
-    // Cargar fotos existentes desde backend
-    const fotos = await obtenerFotosPorInmueble(inmuebleId);
-    existingPhotos = fotos; // [{idFoto, foto, idInmueble}]
-    fotos.forEach(f => agregarPreview(f.foto, "existing", null, f.idFoto));
+      const fotos = await obtenerFotosPorInmueble(inmuebleId);
+      existingPhotos = fotos;
+      fotos.forEach(f => agregarPreview(f.foto, "existing", null, f.idFoto));
 
-    //  Ajustar mapa si hay coordenadas guardadas
-    if (data.latitud && data.longitud) {
-      const lat = parseFloat(data.latitud);
-      const lng = parseFloat(data.longitud);
-      marker.setLatLng([lat, lng]);   // mueve el marcador
-      map.setView([lat, lng], 15);    // centra el mapa
+      if (data.latitud && data.longitud) {
+        const lat = parseFloat(data.latitud);
+        const lng = parseFloat(data.longitud);
+        marker.setLatLng([lat, lng]);
+        map.setView([lat, lng], 15);
+      }
+    } catch (error) {
+      console.error("Error cargando inmueble:", error);
+      mostrarNotificacion("Error al cargar datos del inmueble", "error");
     }
-
-  } catch (error) {
-    console.error("Error cargando inmueble:", error);
-    mostrarNotificacion("Error al cargar datos del inmueble", "error");
   }
-}
-
 
   /* =====================
       Previsualización de imágenes
@@ -195,9 +220,9 @@ if (inmuebleId) {
 
     removeBtn.addEventListener("click", () => {
       if (tipo === "existing") {
-        const index = existingPhotos.findIndex(f =>  f.idFoto === idFoto);
+        const index = existingPhotos.findIndex(f => f.idFoto === idFoto);
         if (index > -1) {
-          removedPhotos.push(existingPhotos[index]); // marcar para eliminar
+          removedPhotos.push(existingPhotos[index]);
           existingPhotos.splice(index, 1);
         }
       } else if (tipo === "new") {
@@ -219,120 +244,122 @@ if (inmuebleId) {
       `${existingPhotos.length + selectedFiles.length} imagen(es) seleccionada(s)`;
   }
 
-/* =====================
-    Enviar formulario
-===================== */
-form.addEventListener("submit", async e => {
-  e.preventDefault();
+  /* =====================
+      Enviar formulario
+  ===================== */
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
 
-  let errores = [];
+    let errores = [];
 
-  //   titulo
-  let titulo = document.getElementById("titulo").value.trim();
-  if (titulo.length < 4) errores.push("El título debe tener al menos 4 caracteres");
-  if (titulo.length > 150) errores.push("El título no debe superar los 150 caracteres");
+    // Validaciones
+    let titulo = document.getElementById("titulo").value.trim();
+    if (titulo.length < 4) errores.push("El título debe tener al menos 4 caracteres");
+    if (titulo.length > 150) errores.push("El título no debe superar los 150 caracteres");
 
-  //   idtipo
-  if (!selectTipo.value) errores.push("El tipo es obligatorio");
+    if (!selectTipo.value) errores.push("El tipo es obligatorio");
+    if (!selectUbi.value) errores.push("La ubicación es obligatoria");
 
-  //   idubicacion
-  if (!selectUbi.value) errores.push("La ubicación es obligatoria");
+    let precio = parseFloat(document.getElementById("precio").value);
+    if (isNaN(precio)) errores.push("El precio es obligatorio");
+    else if (precio <= 49) errores.push("El precio debe ser positivo y mayor o igual a 50");
 
-  //   precio
-  let precio = parseFloat(document.getElementById("precio").value);
-  if (isNaN(precio)) errores.push("El precio es obligatorio");
-  else if (precio <= 49) errores.push("El precio debe ser positivo y mayor o igual a 50");
+    let longitud = parseFloat(document.getElementById("longitud").value);
+    if (isNaN(longitud)) errores.push("La longitud es obligatoria");
+    else if (longitud < -180 || longitud > 180) errores.push("La longitud debe estar entre -180 y 180");
 
-  //   longitud
-  let longitud = parseFloat(document.getElementById("longitud").value);
-  if (isNaN(longitud)) errores.push("La longitud es obligatoria");
-  else if (longitud < -180 || longitud > 180) errores.push("La longitud debe estar entre -180 y 180");
+    let latitud = parseFloat(document.getElementById("latitud").value);
+    if (isNaN(latitud)) errores.push("La latitud es obligatoria");
+    else if (latitud < -90 || latitud > 90) errores.push("La latitud debe estar entre -90 y 90");
 
-  //   latitud
-  let latitud = parseFloat(document.getElementById("latitud").value);
-  if (isNaN(latitud)) errores.push("La latitud es obligatoria");
-  else if (latitud < -90 || latitud > 90) errores.push("La latitud debe estar entre -90 y 90");
+    let descripcion = document.getElementById("descripcion").value.trim();
+    if (descripcion.length === 0) errores.push("La descripción es obligatoria");
+    if (descripcion.length > 450) errores.push("La descripción no debe superar los 450 caracteres");
 
-  //   descripcion
-  let descripcion = document.getElementById("descripcion").value.trim();
-  if (descripcion.length === 0) errores.push("La descripción es obligatoria");
-  if (descripcion.length > 450) errores.push("La descripción no debe superar los 450 caracteres");
+    if (!usuario.id) errores.push("El usuario es obligatorio");
+    if (!selectBanios.value) errores.push("El número de baños es obligatorio");
+    if (!selectHab.value) errores.push("El número de habitaciones es obligatorio");
 
-
-
-  //   id
-  if (!usuario.id) errores.push("El usuario es obligatorio");
-
-  //   idbanios
-  if (!selectBanios.value) errores.push("El número de baños es obligatorio");
-
-  //   idhabitaciones
-  if (!selectHab.value) errores.push("El número de habitaciones es obligatorio");
-
-  // Si hay errores, mostrar y detener envío
-  if (errores.length > 0) {
-    errores.forEach(err => mostrarNotificacion(err, "error"));
-    return;
-  }
-
-  //   Construcción DTO si pasa validaciones
-  const dto = {
-    titulo,
-    descripcion,
-    precio,
-    idtipo: parseInt(selectTipo.value),
-    idubicacion: parseInt(selectUbi.value),
-    idhabitaciones: parseInt(selectHab.value),
-    idbanios: parseInt(selectBanios.value),
-    estado: true,
-    idusuario: usuario.id,
-    latitud,
-    longitud
-  };
-
-  try {
-    let inmuebleGuardado;
-    if (inmuebleId) {
-      inmuebleGuardado = await actualizarInmueble(inmuebleId, dto);
-      mostrarNotificacion("Propiedad actualizada con éxito!", "exito");
-    } else {
-      inmuebleGuardado = await publicarInmueble(dto);
-      mostrarNotificacion("Propiedad publicada con éxito!", "exito");
+    if (errores.length > 0) {
+      errores.forEach(err => mostrarNotificacion(err, "error"));
+      return;
     }
 
-    // 1. Eliminar fotos marcadas
-    for (const f of removedPhotos) {
-      await eliminarFoto(f.idFoto);
+    const dto = {
+      titulo,
+      descripcion,
+      precio,
+      idtipo: parseInt(selectTipo.value),
+      idubicacion: parseInt(selectUbi.value),
+      idhabitaciones: parseInt(selectHab.value),
+      idbanios: parseInt(selectBanios.value),
+      estado: true,
+      idusuario: usuario.id,
+      latitud,
+      longitud
+    };
+
+    try {
+      let inmuebleGuardado;
+      let inmuebleActualId;
+
+      if (inmuebleId) {
+        // EDITAR
+        inmuebleGuardado = await actualizarInmueble(inmuebleId, dto);
+        mostrarNotificacion("Propiedad actualizada con éxito!", "exito");
+        inmuebleActualId = inmuebleId;
+
+        //   Guardar historial de actualización
+        await guardarAccionHistorial("Actualizó", titulo, usuario.id);
+
+      } else {
+        // CREAR
+        inmuebleGuardado = await publicarInmueble(dto);
+        mostrarNotificacion("Propiedad publicada con éxito!", "exito");
+        inmuebleActualId = inmuebleGuardado.idinmuebles;
+
+        //   Guardar historial de publicación
+        await guardarAccionHistorial("Publicó", titulo, usuario.id);
+      }
+
+      // 1. Eliminar fotos marcadas
+      for (const f of removedPhotos) {
+        await eliminarFoto(f.idFoto);
+      }
+
+      // 2. Guardar fotos nuevas
+      for (const file of selectedFiles) {
+        const subida = await subirImagen(file);
+        if (!subida || !subida.url) {
+          throw new Error("Error al subir imagen a Cloudinary");
+        }
+        await publicarFoto({
+          idInmueble: inmuebleActualId,
+          foto: subida.url
+        });
+      }
+
+      // Reset form
+      form.reset();
+      preview.innerHTML = "";
+      selectedFiles = [];
+      existingPhotos = [];
+      removedPhotos = [];
+      updateFileCount();
+
+      // Si fue actualización, redirigir a Menu.html
+      if (inmuebleId) {
+        setTimeout(() => {
+          window.location.href = "Menu.html";
+        }, 1500);
+      }
+
+    } catch (error) {
+      mostrarNotificacion("Error al guardar la propiedad: " + error.message, "error");
     }
-
-// 2. Guardar fotos nuevas
-for (const file of selectedFiles) {
-  const subida = await subirImagen(file);
-
-  if (!subida || !subida.url) {
-    throw new Error("Error al subir imagen a Cloudinary");
-  }
-
-  await publicarFoto({
-    idInmueble: inmuebleGuardado.idinmuebles,
-    foto: subida.url
   });
-}
-
-    // Reset form
-    form.reset();
-    preview.innerHTML = "";
-    selectedFiles = [];
-    existingPhotos = [];
-    removedPhotos = [];
-    updateFileCount();
-    inmuebleId = null;
-
-  } catch (error) {
-    mostrarNotificacion("Error al guardar la propiedad: " + error.message, "error");
-  }
 });
-});
+
 /* =====================
    Notificación flotante
 ===================== */
