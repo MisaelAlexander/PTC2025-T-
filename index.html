@@ -21,9 +21,17 @@
     <form>
       <label for="usuario">Usuario</label>
       <input type="text" id="usuario" name="usuario" placeholder="Ingrese su usuario">
-
-      <label for="password">Contraseña</label>
+<div class="input-container">
+  <label for="password">Contraseña</label>
       <input type="password" id="password" name="password" placeholder="Ingrese su contraseña">
+       <span class="toggle-password" data-target="confirmar">
+          <!-- Ojo SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" viewBox="0 0 24 24">
+            <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-6a2 2 0 1 0 .001 3.999A2 2 0 0 0 12 10Z"/>
+          </svg>
+        </span>
+</div>
+      
 
       <div class="forgot">
         <a href="RecuperarContraseña1.html">¿Olvidó su contraseña?</a>

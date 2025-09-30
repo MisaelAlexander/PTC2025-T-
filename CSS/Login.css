@@ -263,3 +263,11 @@ button:hover {
         font-size: 15px;
     }
 }
+
+.input-container .toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 40%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}

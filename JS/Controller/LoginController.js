@@ -7,6 +7,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // Si ya hay cookie activa, te manda al menú
   estaadentro();
 
+
+  //  Control del ojo de contraseña (SVG)
+  document.querySelectorAll(".toggle-password").forEach(icon => {
+    icon.addEventListener("click", () => {
+      const inputId = icon.getAttribute("data-target");
+      const input = document.getElementById(inputId);
+      const svg = icon.querySelector("svg");
+
+      if (input.type === "password") {
+        input.type = "text";
+        svg.setAttribute("fill", "black"); // activo
+      } else {
+        input.type = "password";
+        svg.setAttribute("fill", "gray"); // inactivo
+      }
+    });
+  });
+  
     function mostrarNotificacion(mensaje, tipo = "exito") {
         const notificacion = document.getElementById("notificacion");
         const notificacionMensaje = document.getElementById("notificacionMensaje");
