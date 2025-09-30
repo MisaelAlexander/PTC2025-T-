@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const inmuebles = response.content;
       totalPages = response.totalPages;
       currentPage = response.pageNumber;
-
+      console.log("Inmuebles cargados:", inmuebles);
       for (let casa of inmuebles) {
         const foto = await obtenerFotoInmueble(casa.idinmuebles);
         const card = document.createElement("section");
