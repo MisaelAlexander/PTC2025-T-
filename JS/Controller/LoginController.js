@@ -1,6 +1,7 @@
 import {  eliminarDescripcionService } from "../Service/LoginService.js";
 import { guardarHistorial } from "../Service/HistorialService.js";
-import { login, me,estaadentro  } from "../Service/AuthService.js";
+import { login, me  } from "../Service/AuthService.js";
+import {estaadentro} from "../Controller/SessionController.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     // Si ya hay cookie activa, te manda al menú
