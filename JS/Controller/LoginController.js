@@ -1,8 +1,11 @@
 import {  eliminarDescripcionService } from "../Service/LoginService.js";
 import { guardarHistorial } from "../Service/HistorialService.js";
-import { login, me } from "../Service/AuthService.js";
+import { login, me,redirectIfAuthenticated  } from "../Service/AuthService.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Si ya hay cookie activa, te manda al menú
+  redirectIfAuthenticated();
+  
     function mostrarNotificacion(mensaje, tipo = "exito") {
         const notificacion = document.getElementById("notificacion");
         const notificacionMensaje = document.getElementById("notificacionMensaje");

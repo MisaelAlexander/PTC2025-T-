@@ -147,3 +147,20 @@ export const role = {
 window.addEventListener("pageshow", async () => {
   await renderUser();
 });
+
+
+// -------------------- REDIRECCIÓN SI YA ESTÁ AUTENTICADO --------------------
+export async function estaadentro() {
+  try {
+    const info = await me();
+    const ok = !!info?.authenticated;
+    const user = info?.user ?? null;
+
+    if (ok && user) {
+      // Si hay sesión activa, lo devolvemos al menu asi evitamos problema
+      window.location.replace("menu.html");
+    }
+  } catch {
+    // Si no hay cookie válida, no pasa nada y se queda en index(login)
+  }
+}
