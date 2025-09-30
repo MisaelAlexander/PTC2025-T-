@@ -195,7 +195,7 @@ if (inmuebleId) {
 
     removeBtn.addEventListener("click", () => {
       if (tipo === "existing") {
-        const index = existingPhotos.findIndex(f => f.foto === src);
+        const index = existingPhotos.findIndex(f =>  f.idFoto === idFoto);
         if (index > -1) {
           removedPhotos.push(existingPhotos[index]); // marcar para eliminar
           existingPhotos.splice(index, 1);
