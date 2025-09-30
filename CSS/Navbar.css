@@ -1,0 +1,278 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #f5f5f5;
+  padding: 20px;
+  height: 100vh;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin-bottom: 30px;
+}
+
+.sidebar .menu {
+  list-style: none;
+  padding: 0;
+  text-decoration: none;
+}
+
+.sidebar .menu li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.sidebar .menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.sidebar .create-btn {
+  width: 100%;
+  margin-bottom: 20px;
+  background-color: #0099ff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+/* Estilos del perfil */
+.perfil-movil {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background: #f8f8f8;
+  margin-bottom: 30px;
+}
+
+.perfil-avatar-lg {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #0099ff;
+}
+
+.usuario-nombre {
+  font-weight: bold;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.detail-titulo {
+  font-weight: 600;
+}
+
+.btn-item {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+}
+
+.btn-cerrar-sesion {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+}
+
+/* Notificaciones */
+.notifications-container {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fdfdfd;
+  padding: 20px;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+}
+
+body {
+  flex-direction: row;
+}
+
+.sidebar {
+ width: 260px;
+  background-color: #fff;
+  height: 100vh;
+  padding: 20px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: width 0.6s ease;
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.collapsed {
+  width: 80px;
+  padding: 20px 10px;
+}
+
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 30px;
+  transition: justify-content 0.6s ease, padding 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-header {
+  justify-content: center;
+}
+
+.cloud {
+  font-size: 1.5rem;
+  margin-right: 8px;
+}
+
+.title {
+  transition: opacity 0.6s ease;
+}
+
+.sidebar.collapsed .title {
+  display: none;
+}
+
+.create-btn {
+  width: 100%;
+  background-color: #000;
+  color: white;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.sidebar.collapsed .create-btn {
+  display: none;
+}
+
+.menu {
+  list-style: none;
+}
+
+.menu li {
+  padding: 12px 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  color: #333;
+  cursor: pointer;
+}
+
+.menu li ion-icon {
+  font-size: 1.4rem;
+  margin-right: 10px;
+  transition: font-size 0.6s ease;
+}
+
+.menu li .text {
+  transition: opacity 0.6s ease;
+}
+
+.sidebar.collapsed .text {
+  display: none;
+}
+
+.sidebar.collapsed .menu li {
+  justify-content: center;
+}
+
+.sidebar.collapsed .menu li ion-icon {
+  margin-right: 0;
+  font-size: 1.8rem;
+}
+
+
+
+.sidebar.collapsed ~ .main-content {
+  margin-left: 80px; /* igual al ancho colapsado del sidebar */
+}
+
+
+.main-content {
+  margin-left: 260px; /* igual al ancho normal del sidebar */
+  padding: 20px;
+  transition: margin-left 0.6s ease;
+  flex-grow: 1;
+}
+
+
+/* ======================= */
+/*     ESTILOS RESPONSIVE  */
+/* ======================= */
+@media (max-width: 1024px) {
+    body {
+        padding: 0 10px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    .container, .content, .card, form, section {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    header, nav, footer {
+        flex-direction: column !important;
+        text-align: center;
+    }
+    .container, .content, .card, form, section {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

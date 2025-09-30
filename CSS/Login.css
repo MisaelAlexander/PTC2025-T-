@@ -1,0 +1,265 @@
+:root {
+    --primary: #1a2a3c;
+    --accent: #3a8fff;
+    --bg-gradient: linear-gradient(135deg, #1f3b57, #264e78);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: var(--bg-gradient);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.login-box {
+    background-color: white;
+    padding: 50px 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 1s ease;
+    text-align: center;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+h2 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 24px;
+}
+
+p.subtitulo {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+form {
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 5px var(--accent);
+    outline: none;
+}
+
+.forgot {
+    text-align: right;
+    font-size: 13px;
+    margin-top: -15px;
+    margin-bottom: 20px;
+}
+
+.forgot a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.forgot a:hover {
+    text-decoration: underline;
+}
+
+button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0e1a26;
+}
+
+.register {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register a {
+    font-weight: bold;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.register a:hover {
+    text-decoration: underline;
+}
+
+/* ==== NOTIFICACIÓN FLOTANTE ==== */
+.notificacion {
+  position: fixed;
+  top: 20px; /* aparece encima del formulario */
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  max-width: 400px;
+  background: #fff;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+  text-align: center;
+  padding: 12px 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+
+  /* animación */
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -30px);
+  transition: all 0.4s ease;
+}
+
+/* cuando está activa */
+.notificacion.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+/* colores según tipo */
+.notificacion.exito {
+  border-left: 6px solid #27ae60;
+}
+
+.notificacion.error {
+  border-left: 6px solid #e74c3c;
+}
+
+.notificacion.info {
+  border-left: 6px solid #3498db;
+}
+/* Modal de confirmación */
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 12px;
+    padding: 25px 20px;
+    width: 80%;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.modal-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+}
+
+.btn-si, .btn-no {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-si {
+    background-color: #4caf50;
+    color: white;
+}
+
+.btn-no {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-si:hover {
+    opacity: 0.9;
+}
+
+.btn-no:hover {
+    opacity: 0.9;
+}
+
+/* ======================= */
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    body {
+        padding: 0 10px;
+    }
+    .login-box {
+        padding: 40px 20px;
+    }
+    input {
+        padding: 12px;
+    }
+    button {
+        padding: 12px;
+        font-size: 15px;
+    }
+}

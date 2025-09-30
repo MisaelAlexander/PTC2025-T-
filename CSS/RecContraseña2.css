@@ -1,0 +1,210 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1e3a5f, #2b5278);
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== TARJETA CENTRAL ===== */
+.login-box {
+    position: relative;
+    background-color: #ffffff;
+    padding: 50px 35px;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 450px;   /* Ajustado para pantallas grandes */
+    min-width: 300px;   /* No muy pequeño en móviles grandes */
+    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    animation: fadeInUp 0.8s ease;
+}
+
+/* ===== ANIMACIONES ===== */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== LOGO ===== */
+.logo-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    object-fit: contain;
+}
+
+/* ===== TITULO Y DESCRIPCIÓN ===== */
+.page-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #003366;
+    margin-bottom: 10px;
+}
+
+.description {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+.email-highlight {
+    font-weight: 600;
+    color: #003366;
+}
+
+/* ===== INPUTS DE CÓDIGO ===== */
+.code-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.code-input {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    text-align: center;
+    font-size: 22px;
+    transition: all 0.25s ease;
+    background-color: #f5faff;
+}
+
+.code-input:focus {
+    border-color: #3a8fff;
+    box-shadow: 0 0 8px rgba(58,143,255,0.25);
+    outline: none;
+}
+
+/* ===== BOTÓN CONFIRMAR ===== */
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: none;
+    background-color: #003366;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #0055a0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* ===== BOTÓN PEQUEÑO DE VOLVER ===== */
+.back-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: #f5b700;
+    color: #003366;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background-color: #e0a800;
+}
+
+/* ===== REENVIAR CÓDIGO ===== */
+.resend-btn {
+    background: none;
+    border: none;
+    color: #003366;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.25s ease;
+}
+
+.resend-btn:hover {
+    color: #1f75ff;
+}
+
+/* ===== NOTIFICACIONES ===== */
+.notificacion {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-30px);
+    min-width: 280px;
+    max-width: 400px;
+    background: #fff;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    padding: 14px 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    z-index: 9999;
+}
+
+.notificacion.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.notificacion.exito { border-left: 6px solid #27ae60; }
+.notificacion.error { border-left: 6px solid #e74c3c; }
+.notificacion.info { border-left: 6px solid #3498db; }
+/* ===== RESPONSIVE ===== */
+
+/* Pantallas pequeñas: <480px */
+@media (max-width: 480px) {
+    .login-box { padding: 30px 20px; }
+    .logo-icon { width: 60px; height: 60px; margin-bottom: 15px; }
+    .page-title { font-size: 20px; }
+    .description { font-size: 13px; margin-bottom: 20px; }
+    .code-inputs { gap: 8px; }
+    .code-input { width: 40px; height: 40px; font-size: 18px; }
+    .submit-btn { padding: 12px; font-size: 15px; }
+    .resend-btn { font-size: 13px; }
+}
+
+/* Pantallas medianas: 481px - 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+    .login-box { padding: 40px 30px; max-width: 400px; }
+    .logo-icon { width: 70px; height: 70px; }
+    .page-title { font-size: 21px; }
+    .description { font-size: 14px; }
+    .code-input { width: 45px; height: 45px; font-size: 20px; }
+}
+
+/* Pantallas grandes: >1024px */
+@media (min-width: 1024px) {
+    .login-box { max-width: 450px; padding: 50px 35px; }
+    .logo-icon { width: 90px; height: 90px; }
+    .page-title { font-size: 24px; }
+    .code-input { width: 55px; height: 55px; font-size: 24px; }
+    .submit-btn { font-size: 17px; padding: 16px; }
+}

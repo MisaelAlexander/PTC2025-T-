@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/CrearCuenta.css">
+
+    <title>ARQOS - Crear una Cuenta</title>
+</head>
+<body>
+  <div class="form-container">
+    <a href="index.html" class="back">&#x276E;</a>
+    <h2 class="form-title">Registro</h2>
+    <p style="text-align:center; margin-bottom:25px;">Regístrate y crea tu cuenta</p>
+
+    <!-- Foto -->
+    <div class="photo-upload-section">
+      <div class="photo-upload-container">
+        <div class="photo-preview" id="photoPreview">
+          <img id="preview" src="" alt="Vista previa" style="display:none;" />
+          <div class="photo-placeholder" id="placeholder">Sin foto</div>
+        </div>
+        <label for="foto" class="photo-upload-btn">Subir foto</label>
+        <input type="file" id="foto" accept="image/*" />
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <form id="registroForm">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" placeholder="Nombre" required />
+        </div>
+        <div class="form-group">
+          <label for="apellido">Apellido</label>
+          <input type="text" id="apellido" placeholder="Apellido" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="dui">DUI</label>
+        <input type="text" id="dui" placeholder="12345678-9" required class="dui-input"/>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="departamento">Ubicación</label>
+          <select id="departamento" name="departamento" required>
+            <option value="" disabled selected>Selecciona un departamento</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="rol">Tipo de cuenta</label>
+          <select id="rol" name="rol" required>
+            <option value="" disabled selected>Selecciona un rol</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="direccion">Dirección</label>
+        <textarea id="direccion" placeholder="Dirección completa" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="correo">Correo</label>
+        <input type="email" id="correo" placeholder="ejemplo@gmail.com" required />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input type="tel" id="telefono" placeholder="12345678" required />
+        </div>
+        <div class="form-group">
+          <label for="fechaNacimiento">Fecha de nacimiento</label>
+          <input type="date" id="fechaNacimiento" name="fechaNacimiento" required />
+        </div>
+      </div>
+
+      <div class="button-group">
+        <a href="login.html" class="btn btn-cancel">Cancelar</a>
+        <button type="submit" class="btn btn-submit">Siguiente paso</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Notificación -->
+  <div id="notificacion" class="notificacion">
+    <p id="notificacionMensaje"></p>
+  </div>
+
+  <script type="module" src="JS/Controller/CrearUsuarioController.js"></script>
+</body>
+</html>

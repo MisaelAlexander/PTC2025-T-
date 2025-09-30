@@ -1,0 +1,37 @@
+
+/* ======================= */
+/*     ESTILOS RESPONSIVE  */
+/* ======================= */
+@media (max-width: 1024px) {
+    body {
+        padding: 0 10px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    .container, .content, .card, form, section {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    header, nav, footer {
+        flex-direction: column !important;
+        text-align: center;
+    }
+    .container, .content, .card, form, section {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

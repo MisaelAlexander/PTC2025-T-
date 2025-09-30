@@ -1,0 +1,321 @@
+/*Navbar de pagiand e inicio*/
+.navbar-custom{
+      text-align: right;
+      background: linear-gradient(135deg, #F7AD19 80% , #e9ecef);
+}
+.Espacio
+{
+    margin-left: 1%;
+    margin-right: 1%;
+}
+.navbar-custom img{
+    width: 50%;
+    height: 50%;
+}
+/*Detallitos del boton para el navbar*/
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+/*Animacion para que se haga un porquito grande*/
+.btn:hover {
+    transform: scale(1.05);
+}
+/*Apartado de menu*/
+/*Eleemnts bases del main*/
+main
+{
+    padding: 20px;
+    /*Fija el crecimiento al viewport(lo que ve el usuario), sin importar el contenido*/
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/*Diseño del div cmas grande*/
+.caja-principal
+{
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    width: 80%;
+    max-width: 1200px;
+    margin-bottom: 30px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.caja-principal:hover
+{
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+/*Diseño de su titulo*/
+.caja-principal h1
+{
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 15px;
+    font-weight: 700px;
+}
+/*Diseño de su titulo h2*/
+.caja-principal h2
+{
+    font-size: 2rem; 
+    color: #0d6efd;
+    margin-bottom: 30px;
+    font-weight: 400px;
+    font-style: italic;
+}
+
+/*Contenedor de las cajas*/
+.contenedor-cuadros
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    width: 80%;
+    max-width: 1200;
+    display: flex;
+    flex-direction:row;
+}
+/*Diseño de las cajas*/
+.box
+{
+background-color: white;
+border-radius: 15px;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+padding: 30px;
+text-align: center;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+width: 80%;
+}
+/*Deiseño de las cajs cuadno pasan encima de el*/
+.box:hover
+{
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+/*Para los titulos un color diferente*/
+.box h2
+{
+color: #2c3e50; 
+font-size: 1.5rem;
+margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+    .caja-principal h1
+    {
+        font-size: 2rem;
+    }
+    .box h2
+    {
+        font-size: 1.4rem;
+    }
+    .box p
+    {
+        font-size: 1rem;
+    }
+    .contenedor-cuadros
+    {
+        display: flex;
+        flex-direction: column;
+    }
+}
+@media (max-width: 576px) {
+    .navbar-custom{
+      display: flex;
+      flex-direction: row;
+}   
+.Espacio
+{
+    margin-left: 10%;
+    margin-right: 10%;
+}
+.navbar-custom img{
+      text-align: right;
+}   
+    .caja-principal h1
+    {
+        font-size: 1.8rem; 
+    }
+    .box h2
+    {
+        font-size: 1.2rem;
+    }
+    .box p
+    {
+        font-size: 0.9rem;
+    }
+    .contenedor-cuadros
+    {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+    }
+    .box
+    {
+        width: 100%;
+    }
+}
+  /*Apartado de los Modals*/
+.Modal
+{
+    -webkit-overflow-scrolling: touch; /* Hace mejor la barrita de scroll */
+    display: none;
+    position: fixed;
+    outline: none;
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    width: 80%;
+    max-width: 800px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-out;
+    overflow: hidden;
+}
+.Modal::backdrop
+{
+    background:rgb(0, 0, 0,0.6);
+    backdrop-filter:blur(4px);
+}
+.Modal h3
+{
+color: #2c3e50;
+font-size: 1.8rem;
+margin-bottom: 1.5rem;
+margin: 20px;
+}
+.Modal-Cuerpo
+{
+color: #2c3e50;
+line-height: 1.6;
+margin-bottom: 2rem;
+margin: 20px;
+}
+/*Animaciones de entrada*/
+@keyframes fadeIn
+{
+/*Que aparezca a un Y(-20) de abajo*/
+from
+{
+opacity: 0;
+transform: translateY(-20px);
+}
+/*Que se traslado a un Y(0) al centro*/
+to
+{
+opacity: 1;
+transform: translateY(0);
+}
+}  
+.cantidad-usuarios
+{
+font-size: 30px;
+} 
+@media (max-width: 980px)
+{
+.box-dialogs
+{
+ width: 100%;
+}
+}
+@media (max-width: 780px) {
+.Modal
+{
+    overflow-y: scroll;
+}
+}
+@media (max-width: 576px) {
+.Modal
+{
+    overflow-y: scroll;
+}
+.Modal-Contenido
+{
+    flex-direction: row;
+}
+.box-dialogs
+{
+ width: 190%;
+}
+.Modal h3
+{
+color: #2c3e50;
+font-size: 1.2rem;
+margin-bottom: 0.9rem;
+margin: 20px;
+}
+.Modal-Cuerpo
+{
+color: #2c3e50;
+line-height: 1;
+margin-bottom: 1.4rem;
+margin: 20px;
+}
+}
+.Grafico
+{
+    width: 100%; 
+    max-width: 100%; 
+    min-height: 300px;
+}
+.Lista-Mejorada
+{
+    list-style-type: none;/*Con esto quitamos los puntos qe vienen por defecto*/
+    padding: 0;
+    width: 300px;
+}
+.Lista-Mejorada li
+{
+    padding: 12px 16px;
+    margin: 8px 0;
+    background-color: #f8f9fa;
+    border-left: 4px solid #1E3A8A;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+.Lista-Mejorada li:hover
+{
+    background-color: #e9ecef;
+    transform: translateX(5);
+}
+/* ======================= */
+/*     ESTILOS RESPONSIVE  */
+/* ======================= */
+@media (max-width: 1024px) {
+    body {
+        padding: 0 10px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    .container, .content, .card, form, section {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    header, nav, footer {
+        flex-direction: column !important;
+        text-align: center;
+    }
+    .container, .content, .card, form, section {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

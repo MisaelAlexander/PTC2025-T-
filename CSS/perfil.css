@@ -1,0 +1,228 @@
+/* ==============================
+   PERFIL - Inmobiliaria
+   ============================== */
+
+/* --------- Reset básico --------- */
+body {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: #f5f7fb;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  margin-left: 270px; /* espacio para el sidebar */
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+    margin-top: -650px;
+  margin-bottom: 50px;
+}
+
+.toggleButton {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1001;
+  color: #444;
+}
+
+/* --------- Main --------- */
+main {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+/* --------- Imagen de perfil --------- */
+.profile-picture {
+  margin-bottom: 20px;
+}
+
+.profile-picture img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #007bff;
+  transition: transform 0.3s ease;
+}
+
+.profile-picture img:hover {
+  transform: scale(1.05);
+}
+
+/* --------- Notificaciones --------- */
+.notificacion {
+  display: none;
+  margin: 15px 0;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #eaf4ff;
+  color: #004085;
+  border: 1px solid #b8daff;
+  text-align: center;
+}
+
+#confirmacionDesactivar {
+  background: #fff3f3;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+.confirm-buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn-confirm, .btn-cancel {
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-confirm {
+  background: #28a745;
+  color: white;
+}
+
+.btn-cancel {
+  background: #dc3545;
+  color: white;
+}
+
+/* --------- Card de perfil --------- */
+.profile-card {
+  padding: 20px;
+  margin: 20px 0;
+  background: #f9fafc;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+  text-align: left;
+  line-height: 1.6;
+}
+
+/* --------- Botones --------- */
+.buttons {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.buttons button {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+#actualizarBtn {
+  background: #007bff;
+  color: #fff;
+}
+
+#guardarBtn {
+  background: #17a2b8;
+  color: #fff;
+}
+
+.btn-cerrar {
+  background: #6c757d;
+  color: #fff;
+}
+
+.btn-eliminar {
+  background: #dc3545;
+  color: #fff;
+}
+
+.buttons button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* --------- Modal confirmación --------- */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%;
+  background-color: rgba(0,0,0,0.5); 
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto; 
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.modal-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn-si, .btn-no {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-si {
+  background: #28a745;
+  color: white;
+}
+
+.btn-no {
+  background: #dc3545;
+  color: white;
+}
+
+/* --------- Responsivo --------- */
+@media (max-width: 768px) {
+  .container {
+    margin-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  main {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,313 @@
+/* ==== BASE ==== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", "Segoe UI", Tahoma, sans-serif;
+  background: linear-gradient(135deg, #1c2b36, #243b55);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ==== CONTENEDOR ==== */
+.container {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  animation: fadeUp 0.7s ease-out;
+  overflow: hidden;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 160px;
+  height: 160px;
+  background: #1c2b36;
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.15;
+}
+.container::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  width: 160px;
+  height: 160px;
+  background: #243b55;
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.15;
+}
+
+/* ==== BACK BUTTON ==== */
+.back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 24px;
+  color: #1c2b36;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+  z-index: 2;
+}
+.back:hover {
+  transform: scale(1.15);
+}
+
+/* ==== TITULO ==== */
+h2 {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1c2b36;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+}
+.container p {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ==== CAMPOS ==== */
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+  z-index: 2;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
+  background-color: #fafbfc;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #243b55;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(36, 59, 85, 0.1);
+}
+
+/* Icono dentro del input */
+.input-group i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+/* ==== BOTONES ==== */
+.btn {
+  width: 100%;
+  background: linear-gradient(135deg, #1c2b36, #243b55);
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.35s ease;
+  border: none;
+  position: relative;
+  z-index: 2;
+}
+.btn:hover {
+  background: linear-gradient(135deg, #243b55, #2d4c70);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(28, 43, 54, 0.35);
+}
+
+/* ==== NOTIFICACIÓN FLOTANTE ==== */
+.notificacion {
+  position: fixed;
+  top: 20px; /* aparece encima del formulario */
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  max-width: 400px;
+  background: #fff;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+  text-align: center;
+  padding: 12px 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+
+  /* animación */
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -30px);
+  transition: all 0.4s ease;
+}
+
+/* cuando está activa */
+.notificacion.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+/* colores según tipo */
+.notificacion.exito {
+  border-left: 6px solid #27ae60;
+}
+
+.notificacion.error {
+  border-left: 6px solid #e74c3c;
+}
+
+.notificacion.info {
+  border-left: 6px solid #3498db;
+}
+/* ==== ANIMACIONES ==== */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==== RESPONSIVE ==== */
+@media screen and (max-width: 480px) {
+  .container {
+    padding: 28px 22px;
+    border-radius: 16px;
+  }
+  h2 {
+    font-size: 22px;
+  }
+  .btn {
+    font-size: 15px;
+    padding: 12px;
+  }
+  .input-group input {
+    font-size: 14px;
+    padding: 12px 12px 12px 40px;
+  }
+}
+
+/* ==== FORMULARIO ==== */
+form {
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+/* ==== GRUPOS ==== */
+.input-group {
+  position: relative;
+  margin-bottom: 22px;
+  z-index: 2;
+}
+
+/* ==== INPUT ==== */
+.input-group input {
+  width: 100%;
+  padding: 16px 16px 16px 44px; /* espacio por el icono */
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
+  background-color: #fafbfc;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #243b55;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(36, 59, 85, 0.15);
+}
+
+/* ==== LABEL flotante ==== */
+.input-group label {
+  position: absolute;
+  left: 44px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: #888;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label {
+  top: -8px;
+  left: 38px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fff;
+  padding: 0 6px;
+  color: #243b55;
+  border-radius: 6px;
+}
+
+/* ==== ICONOS opcionales ==== */
+.input-group i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 16px;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.input-group input:focus ~ i {
+  color: #243b55;
+}
+
+/* ==== BOTÓN ==== */
+.btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #243b55, #141e30);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(36,59,85,0.3);
+}

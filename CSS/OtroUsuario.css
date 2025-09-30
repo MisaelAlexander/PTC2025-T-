@@ -1,0 +1,148 @@
+body {
+    margin: 0;
+    padding: 0;
+    background:white;
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .card {
+    display: flex;
+    max-width: 900px;
+    background: #1C2B36;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  /* Izquierda */
+  .left {
+    flex: 1;
+    min-width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .photo {
+    width: 130px;
+    height: 130px;
+    background: url('https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png') center/cover no-repeat;
+    border: 5px solid #c89d66;
+    border-radius: 50%;
+    margin-bottom: 20px;
+  }
+  
+  .info {
+    list-style: none;
+    padding: 0;
+    font-size: 1rem;
+  }
+  
+  .info li {
+    margin: 10px 0;
+  }
+  
+  /* Derecha */
+  .right {
+    flex: 2;
+    min-width: 300px;
+    color: #fff;
+  }
+  
+  .right h2 {
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  
+  .comment {
+    background: #fff;
+    color: #000;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  
+  .comment-icon {
+    width: 40px;
+    height: 40px;
+    background: url('https://cdn-icons-png.flaticon.com/512/149/149071.png') center/cover no-repeat;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .comment-content {
+    flex: 1;
+  }
+  
+  .stars {
+    color: gold;
+    margin-top: 8px;
+    font-size: 1rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 700px) {
+    .card {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .left, .right {
+      width: 100%;
+      text-align: center;
+    }
+  
+    .comment {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+  
+/* ======================= */
+/*     ESTILOS RESPONSIVE  */
+/* ======================= */
+@media (max-width: 1024px) {
+    body {
+        padding: 0 10px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    .container, .content, .card, form, section {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    header, nav, footer {
+        flex-direction: column !important;
+        text-align: center;
+    }
+    .container, .content, .card, form, section {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

@@ -1,0 +1,199 @@
+body {
+  background-color: #6988b2;
+  font-family: 'Poppins', sans-serif;
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/IMG/fondito.webp');
+  margin: 0;
+  
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+main
+{
+padding: 60px 20px;
+}
+
+.titulo {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 40px;
+  color: white;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.contenedor {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+/*carrusel*/
+.carrusel {
+  width: 600px;
+  position: relative;
+}
+
+.slide {
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  height: 300px; 
+}
+
+.slide-inner {
+  display: flex;
+  width: 200%; 
+  transition: transform 0.5s ease;
+}
+
+.slide-inner img {
+  width: 50%; 
+  height: 300px;
+  object-fit: cover;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+/* Mover carrusel */
+#slide1:checked ~ .slide .slide-inner {
+  transform: translateX(0%);
+}
+
+#slide2:checked ~ .slide .slide-inner {
+  transform: translateX(-50%); /* cambiar a -50% en lugar de -100% */
+}
+
+.navegacion {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+}
+
+.navegacion label {
+  background-color: rgba(0,0,0,0.5);
+  color: #fff;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 18px;
+  transition: background 0.3s;
+}
+
+.navegacion label:hover {
+  background-color: #000;
+}
+
+
+/* Formulario */
+.formulario {
+  width: 400px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+}
+
+.perfil {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.icono {
+  font-size: 32px;
+  background-color: #e0e0e0;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.mensaje {
+  color: #0047ab;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+form textarea {
+  resize: vertical;
+}
+
+.botones {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #a56b42;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background-color: #864e2d;
+}
+
+
+/* ======================= */
+/*     ESTILOS RESPONSIVE  */
+/* ======================= */
+@media (max-width: 1024px) {
+    body {
+        padding: 0 10px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    .container, .content, .card, form, section {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    header, nav, footer {
+        flex-direction: column !important;
+        text-align: center;
+    }
+    .container, .content, .card, form, section {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Propiedad - Arqos</title>
+     <title>Publicar Casa</title>
+  <link rel="stylesheet" href="CSS/Sidebar.css">
+  <link rel="stylesheet" href="CSS/Publicar.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+ <!-- Leaflet Locate -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar"></div>
+    <button id="toggleButton" class="toggleButton"><ion-icon name="menu-outline"></ion-icon></button>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <section class="form-container">
+            <h2><i class="fas fa-home"></i> Publicar Propiedad</h2>
+            <form id="formPublicar">
+                <!-- ... (resto del formulario sin cambios) ... -->
+                   <div class="form-group">
+                    <label for="titulo"><i class="fas fa-heading"></i> Título</label>
+                    <input type="text" id="titulo" placeholder="Ej: Amplia casa con jardín en zona residencial" required>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion"><i class="fas fa-align-left"></i> Descripción</label>
+                    <textarea id="descripcion" rows="4" placeholder="Describe tu propiedad con detalles importantes..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="precio"><i class="fas fa-dollar-sign"></i> Precio ($)</label>
+                    <input type="number" id="precio" step="0.01" min="0" placeholder="Ej: 250000.00" required>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="idtipo"><i class="fas fa-building"></i> Tipo de propiedad</label>
+                    <select id="idtipo" required>
+                        <option value="">Seleccione el tipo de propiedad</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="idubicacion"><i class="fas fa-map-marker-alt"></i> Ubicación</label>
+                    <select id="idubicacion" required>
+                        <option value="">Seleccione la ubicación</option>
+                    </select>
+                </div>
+                </div>
+                
+                
+              <div class="form-row">
+  <div class="form-group">
+    <label for="idhabitaciones"><i class="fas fa-bed"></i> Habitaciones</label>
+    <select id="idhabitaciones" required>
+      <option value="">Seleccione la cantidad</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="idbanios"><i class="fas fa-bath"></i> Baños</label>
+    <select id="idbanios" required>
+      <option value="">Seleccione la cantidad</option>
+    </select>
+  </div>
+</div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-camera"></i> Fotos (máximo 10)</label>
+                    <div class="upload-container">
+                        <label for="fotos" class="file-input-label">
+                            <i class="fas fa-upload"></i> Seleccionar imágenes
+                        </label>
+                        <input type="file" id="fotos" accept="image/*" multiple>
+                        <div class="file-count" id="fileCount">0 imágenes seleccionadas</div>
+                    </div>
+                    <div id="preview" class="preview-container"></div>
+                </div>
+                <!-- Mapa para capturar coordenadas -->
+                <div class="form-group">
+                    
+                    <label><i class="fas fa-map"></i> Ubicación en el mapa</label>
+                    <div id="map"></div>
+                    <p class="map-instructions">Haz clic en el mapa para seleccionar la ubicación exacta de la propiedad o utiliza el botón de ubicación, en la esquina superior derecha del mapa para usar tu ubicación actual.</p>
+                    <input type="hidden" id="latitud" name="latitud" required>
+                    <input type="hidden" id="longitud" name="longitud" required>
+                </div>
+
+                <button type="submit" id="btnPublicar"><i class="fas fa-paper-plane"></i> Publicar Propiedad</button>
+            </form>
+            <div id="mensaje" class="mensaje"></div>
+        </section>
+    </main>
+<!--Notificacion de respuesta-->
+<div id="notificacion" class="notificacion">
+    <p id="notificacionMensaje"></p>
+</div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Leaflet Locate Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script type="module" src="JS/Controller/PublicarController.js"></script>
+</body>
+</html>

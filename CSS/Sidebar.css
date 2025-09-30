@@ -1,0 +1,190 @@
+/* --------------------
+   Sidebar moderno global
+-------------------- */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #ffffff, #f9f9fb);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease, left 0.3s ease;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 1000;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Sidebar colapsado en desktop */
+.sidebar.closed {
+  width: 70px;
+  padding: 15px 10px;
+}
+
+/* Encabezado */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 25px;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 10px;
+  border-radius: 12px;
+  transition: background 0.3s;
+}
+
+.sidebar-header:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.sidebar-header .cloud {
+  font-size: 26px;
+  color: #4a90e2;
+  transition: color 0.3s;
+}
+
+.sidebar.closed .title {
+  display: none;
+}
+
+/* Items del menú */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  margin: 6px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #333;
+  transition: background 0.3s, color 0.3s;
+}
+
+.sidebar ul li ion-icon {
+  font-size: 22px;
+  min-width: 24px;
+  color: #4a90e2;
+  transition: color 0.3s;
+}
+
+.sidebar ul li:hover {
+  background: #4a90e2;
+  color: #fff;
+}
+
+.sidebar ul li:hover ion-icon {
+  color: #fff;
+}
+
+.sidebar ul li .text a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Sidebar colapsado */
+.sidebar.closed ul li {
+  justify-content: center;
+  gap: 0;
+}
+
+.sidebar.closed ul li .text {
+  display: none;
+}
+
+/* --------------------
+   Botón toggle móvil
+-------------------- */
+#toggleButton {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 2000;
+  display: none;
+}
+
+/* --------------------
+   Responsive tablet/móvil
+-------------------- */
+@media screen and (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    height: 100%;
+    border-radius: 0;
+    padding-top: 20px;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  #toggleButton {
+    display: block;
+  }
+
+  .sidebar-header {
+    display: none;
+  }
+}
+
+.create-btn {
+  background: linear-gradient(135deg, #4a90e2, #357ABD);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+
+  /* Estilo moderno */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Hover */
+.create-btn:hover {
+  background: linear-gradient(135deg, #5aa4ff, #2f69b3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* Click */
+.create-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  margin-top: 20px;
+}

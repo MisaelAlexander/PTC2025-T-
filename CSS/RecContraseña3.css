@@ -1,0 +1,228 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1f3b57, #264e78);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* ===== TARJETA CENTRAL ===== */
+.container {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: clamp(30px, 5vw, 50px);
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    text-align: center;
+    position: relative;
+    animation: fadeInUp 1s ease;
+}
+
+/* ===== ANIMACIONES ===== */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TITULOS ===== */
+h2 {
+    font-size: clamp(20px, 3vw, 24px);
+    color: #003366;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: clamp(13px, 2vw, 16px);
+    color: #555;
+    margin-bottom: 25px;
+}
+
+/* ===== BOTÓN VOLVER ===== */
+.back-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: #003366;
+    background-color: #f5b700;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #e0a800;
+}
+
+/* ===== FORMULARIO ===== */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form label {
+    text-align: left;
+    font-weight: 500;
+    color: #003366;
+    font-size: clamp(14px, 2vw, 16px);
+}
+
+form input {
+    padding: clamp(10px, 2vw, 14px);
+    border-radius: 12px;
+    border: 2px solid #ccc;
+    font-size: clamp(14px, 2vw, 16px);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+form input:focus {
+    border-color: #3a8fff;
+    box-shadow: 0 0 8px rgba(58,143,255,0.3);
+}
+
+/* ===== BOTÓN CAMBIAR ===== */
+form button {
+    background: linear-gradient(90deg, #f5b700, #ffc107);
+    color: #003366;
+    font-weight: 600;
+    border: none;
+    border-radius: 14px;
+    padding: clamp(12px, 2.5vw, 16px);
+    font-size: clamp(15px, 2.5vw, 17px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+/* ===== NOTIFICACIÓN ===== */
+.notificacion {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-30px);
+    min-width: 280px;
+    max-width: 400px;
+    background: #fff;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    padding: 14px 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    z-index: 9999;
+}
+
+.notificacion.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.notificacion.exito { border-left: 6px solid #27ae60; }
+.notificacion.error { border-left: 6px solid #e74c3c; }
+.notificacion.info { border-left: 6px solid #3498db; }
+
+/* ===== RESPONSIVE ===== */
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .container {
+        padding: 25px 15px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    p {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    form input {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    form button {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .back {
+        top: 10px;
+        left: 10px;
+        padding: 5px 10px;
+        font-size: 13px;
+    }
+}
+
+/* Tablets */
+@media (min-width: 481px) and (max-width: 1023px) {
+    .container {
+        max-width: 380px;
+        padding: 30px 20px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    form input {
+        font-size: 15px;
+    }
+
+    form button {
+        font-size: 16px;
+    }
+}
+
+/* Pantallas grandes */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 450px;
+        padding: 50px 35px;
+    }
+
+    h2 {
+        font-size: 23px;
+    }
+
+    p {
+        font-size: 15px;
+    }
+
+    form input {
+        font-size: 16px;
+    }
+
+    form button {
+        font-size: 17px;
+    }
+}

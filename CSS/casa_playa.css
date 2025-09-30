@@ -1,0 +1,269 @@
+/* ==== RESET BÁSICO ==== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; /* Base para escritorio */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* ==== IMÁGENES Y VIDEOS ==== */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ==== CONTENEDORES GENERALES ==== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 1rem;
+}
+
+/* ==== TEXTO RESPONSIVE ==== */
+h1 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
+h2 { font-size: clamp(1.25rem, 4vw, 2rem); }
+p  { font-size: clamp(1rem, 2.5vw, 1.125rem); }
+
+/* ==== LAYOUT RESPONSIVE ==== */
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Por defecto en escritorio */
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ==== MEDIA QUERIES ==== */
+@media (max-width: 992px) {
+  .grid-3 {
+      grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .flex {
+      flex-direction: column;
+  }
+  .grid-3, .grid-2 {
+      grid-template-columns: 1fr;
+  }
+  html {
+      font-size: 15px; /* Texto un poco más pequeño */
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+      font-size: 14px; /* Texto más compacto */
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+    color: #212529;
+  }
+  
+
+  h2, h3, h4, h5 {
+    font-weight: 600;
+    color: #343a40;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .image-carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .image-carousel button {
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    padding: 0.5rem 1rem;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .image-carousel button:hover {
+    background-color: #e9ecef;
+  }
+  
+  .bg-light {
+    background-color: #f1f3f5 !important;
+    border-left: 5px solid #198754;
+  }
+  
+
+  .ButtonWP {
+    margin-top: 2rem;
+    background-color: #25D366;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .ButtonWP:hover {
+    background-color: #1ebe5d;
+    transform: scale(1.03);
+  }
+  
+
+  .perfil-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .perfil-avatar-lg {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }
+
+  .info-card {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+  }
+  
+ 
+  .perfil-details {
+    display: none;
+    background-color: #ffffff;
+    padding: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1.5rem;
+  }
+  
+  .detail-item {
+    font-size: 0.95rem;
+  }
+  
+  .detail-titulo {
+    font-weight: bold;
+  }
+  
+
+  .perfil-visible {
+    display: block !important;
+  }
+  
+
+  @media (max-width: 768px) {
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .perfil-avatar {
+      width: 35px;
+      height: 35px;
+    }
+  
+  
+  }
+  
+  .ButtonWP {
+    display: inline-block;
+  background-color: #f7ad19;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  transition:0.3s;
+  }
+
+  
+/* ======================= */
+/*     ESTILOS RESPONSIVE  */
+/* ======================= */
+@media (max-width: 1024px) {
+    body {
+        padding: 0 10px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    .container, .content, .card, form, section {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    header, nav, footer {
+        flex-direction: column !important;
+        text-align: center;
+    }
+    .container, .content, .card, form, section {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

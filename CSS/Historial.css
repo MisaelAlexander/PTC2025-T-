@@ -1,0 +1,146 @@
+/* CONTENEDOR GENERAL */
+body {
+  display: flex;
+  flex-direction: row; /* Sidebar a la izquierda, main a la derecha */
+  margin: 0;
+  min-height: 100vh;
+  background: #f5f7fb;
+}
+/* -------- MAIN -------- */
+/* -------- MAIN -------- */
+main {
+  flex: 1; /* ocupa todo el espacio restante */
+  margin-left: 50px; /* mismo ancho que el sidebar */
+  padding: 30px; /* más respiro en desktop */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+  max-width: 1400px; /* límite de lectura cómodo en monitores grandes */
+}
+
+/* -------- ADAPTACIÓN SEGÚN ESTADO DEL SIDEBAR -------- */
+.sidebar.closed ~ main {
+  margin-left: 70px; /* cuando sidebar está colapsado */
+  max-width: calc(100% - 90px);
+  transition: all 0.3s ease;
+}
+
+
+/* -------- TITULO + CONTROLES -------- */
+.title-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* para que baje en pantallas pequeñas */
+  margin-bottom: 15px;
+}
+
+.title-controls h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.size-select label {
+  font-size: 0.9rem;
+  margin-right: 5px;
+  color: #555;
+}
+
+.size-select select {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background: #f8f9fa;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* -------- LISTA DE HISTORIAL -------- */
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-list li {
+  background: #f9fafc;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+
+.history-list li:hover {
+  background: #eef3fb;
+}
+
+/* -------- PAGINACIÓN -------- */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.paginacion button {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paginacion button:hover {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+/* -------- ADAPTACIÓN SEGÚN ESTADO DEL SIDEBAR -------- */
+.sidebar.closed ~ main {
+  margin-left: 70px; /* cuando sidebar está colapsado */
+  max-width: calc(100% - 90px);
+  transition: all 0.3s ease;
+}
+
+/* -------- RESPONSIVE -------- */
+@media (max-width: 1024px) {
+  main {
+    margin-left: 0; /* en móvil sidebar se oculta */
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: 15px;
+  }
+
+  .title-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .history-list li {
+    padding: 12px;
+  }
+}

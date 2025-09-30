@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arqos Login</title>
+  <link rel="icon" href="IMG/Logo.png" type="image/x-icon">
+  <link rel="shortcut icon" href="IMG/Logo.png" type="image/x-icon"> 
+  <link rel="stylesheet" href="CSS/Login.css" />
+
+</head>
+<body>
+
+  <div class="login-box">
+    <img src="img/logo.png" alt="Logo" class="logo">
+
+    <h2>INICIAR SESIÓN</h2>
+
+    <p class="subtitulo">Bienvenido a tu Inmobiliaria</p>
+
+    <form>
+      <label for="usuario">Usuario</label>
+      <input type="text" id="usuario" name="usuario" placeholder="Ingrese su usuario">
+
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password" placeholder="Ingrese su contraseña">
+
+      <div class="forgot">
+        <a href="RecuperarContraseña1.html">¿Olvidó su contraseña?</a>
+      </div>
+
+      <button type="submit" id="Entrar">Acceder</button>
+      <p class="mensaje-exito" id="mensajeExito" style="display: none;">¡Registro completado con éxito!</p>
+      <p class="mensaje-error" id="mensajeError" style="display: none;"></p>
+    </form>
+
+    <div  id="register" class="register">
+      ¿No tienes una cuenta? <a href="CrearUsuario.html">Regístrate</a>
+    </div>
+  </div>
+<script type="module" src="JS/Controller/LoginController.js"></script>
+<!--Notificacion de respuesta-->
+<div id="notificacion" class="notificacion">
+    <p id="notificacionMensaje"></p>
+</div>
+<!--Notificacion de pregunta-->
+<div id="modalConfirm" class="modal">
+    <div class="modal-content">
+        <p id="modalMensaje"></p>
+        <div class="modal-buttons">
+            <button id="modalSi" class="btn-si">Sí</button>
+            <button id="modalNo" class="btn-no">No</button>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

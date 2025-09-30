@@ -1,0 +1,536 @@
+/*Se usa para definir los colores de la pagina web ya no teneidnoq eu escribir el numero del colro si n que el tag del color */
+:root 
+{
+    --primary-orange: #FA9518;/*Color Principal*/
+    --secondary-blue: #9DB4C0;/*Color Secundario*/
+    --dark-blue: #1E3A8A;/*Azul*/
+    --white: #FFFFFF;/*Blanco*/
+}
+
+/*Esto nos sirve para darle degradado entre dos colores y un tercer color que da sombra*/
+.navbar
+{
+    /*Especificamos neustros colores para el degrado(Tiene esas viñeta spor los especificados arriba)*/
+    background: linear-gradient(135deg, var(--dark-blue) 0%, var(--secondary-blue) 100%);
+    /*El color de la sombra*/
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2);
+    padding: 15px 0;
+    display: flex;
+    align-items: center; /* Centra verticalmente */
+    justify-content: space-between; /* Distribuye el espacio */
+}
+
+.navbar-brand
+{
+    /*Es como la negrit para que el texto se vea mas grueso*/
+    font-weight: 700;
+    /*Especificamos el color*/
+    color: var(--white);
+    /*Indicamos que el tamño del texto debe de ser 1.3 veces el tamaño base del documento esto gracias al rem*/
+    font-size: 1.3rem;
+    /*Sombra del texto*/
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /*Al seleccioanr un texto vincuado tiene una linea abajo con este comando al quitamos*/
+    text-decoration: none;
+}
+
+.navbar-brand img
+{
+    /* Máximo de 150px (se escala en pantallas pequeñas) */
+    max-width: 150px;   
+    /* Ocupa el 100% del contenedor (.navbar-brand) */
+    width: 100%;        
+    /* Proporción automática */
+    height: auto;       
+    /*Integra la iamgen y brigntness convierte la imagen anegri y el invert lo invierte y lo hace blanco*/
+    filter: brightness(0) invert(1);
+    /*Agregamos uan animaciond e 0.3s que tiene movimiento vertical*/
+    transition: all 0.3s ease;
+}
+
+/*Este se activa cuando se pone encima de la imagen le da un borde naranja*/
+.navbar-brand :hover img
+{
+    /*Aplicamos de nuevo brightnes que lo pasa a negro y usamos invert para convertirlo a blanco*/
+filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(250,149,24,0.6));
+}
+
+.navbar-brand:hover
+{
+/*Mantenemos el color del texto blanco*/
+color: var(--white);
+/*Quitamos al decoracion del texto*/
+text-decoration: none;
+}
+/*Esto se aplica a dispositivos moviles por su limite de 768 px*/
+
+@media(max-width: 768px)
+{
+
+.navbar-brand img
+{
+    /*Margen izquierdo de 8px*/
+    margin-right: 8px;
+    /*Tamaño de letras de 35*/
+    height: 50px;       
+}
+
+.navbar-brand
+{
+    /*LE dmos como una especie de eltra responsive ya que del vlaor base buscara adaptarse a al cantidad de "espacio disponible"*/
+    font-size: 1.1rem;
+}
+}
+
+.nav-link
+{
+    /*Definimos el color del link de los textos como blanco*/
+    color: var(--white);
+    /*Hacemos mas fuerte el blanco*/
+    font-weight: 500px;
+    /*Espacio entre cada celda*/
+    margin: 0 10px;
+    /*Efecto de movimeinto de cambio de color corto de duracion de 0.3 segundo*/
+    transition: all 0.3s ease;
+    /*una base relativa para los elementos*/
+    position: relative;
+    /*Da una mayor area del boton*/
+    padding: 8px 16px;
+    /*Forma de bordes redondeados*/
+    border-radius: 25px;
+}
+
+.nav-link:hover
+{
+    /*Ponemos que el al ponerse encima de un link de navabar cambie el fondo a naranja*/
+    background-color: var(--primary-orange);
+    /*Y que al eltra cambie a blanco*/
+    color: var(--white) !important;
+}
+/*Esto es para evitar un rpoblema que salia que al presinarlo el boton o las letras se quedaban negras entonces agrege esta funcion(El active ayuda a que esto se aplica solo al que tiene el enlace a la pagina actual)*/
+.nav-link.active
+{
+    /*El texto vuelve a ser blanco*/
+    color: var(--white);
+}
+.dropdown:hover .dropdown-menu
+{
+    display: block;
+}
+.dropdown-menu
+{
+/*Quitamos el borde que rodea todo el menu que se dropea*/
+border: none;
+/*Quitamo el desplazamiento horizontal y damos un poco mas de espacio hacia abajo damos un difumiandod e 25 px*/
+/*Ponemos un color azul oscuro con una sombre de 0.15*/
+box-shadow: 0 8px 25px rgba(30, 58, 138, 0.15);
+/*Un borde exterior de 10 pixeles*/
+border-radius: 10px;
+/*Indicamos que sea color blanco(Intente ponerlo naranja pero se ve feo)Probablemente lo elimine despues si no lo uso*/
+background-color: var(--white);
+/*Añade un espacio de 10px para separar el boton del menu*/
+margin-top: 10px;
+}
+.dropdown-item
+{
+    /*Ponemos el color de la letra el cual seria azul oscuro*/
+    color: var(--dark-blue);
+    /*Crea un padding con el porposito de dar un mayor lo cual lo hace mejor apra telefonos*/
+    padding: 12px 20px;
+    /*Da un cambio de color a un tono a negro durante 0.3 segundos*/
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover
+{
+    /*Añadimos un fondo naranja cada vez que se pone uno encima*/
+    background-color: var(--primary-orange);
+    /*El color de la letra cambia a blanco*/
+    color: var(--white);
+    /*Esto es apra darle un poco mas de movilidad y de como un pequeño salto*/
+    transform: translateX(5px);
+}
+
+.navbar-toggler
+{
+    /*Damos un borde naranja*/
+    border: none;
+    /*Damos un amyor espacio en el interior del boton*/
+    padding: 8px 12px;
+    /*Le ponemos un poco de borde redondeado*/
+    border-radius: 8px;
+    /*Damos un fondo naranja*/
+    background-color: transparent;
+}
+
+.navbar-toggler.active .navbar-toggler-icon
+{
+    /*Indicamos una*/
+    box-shadow: 0 0 0 0.25rem rgba(30, 58, 138, 0.15) ;
+}
+
+/*Estil apra pantallas pequeñas de nuevo*/
+@media(max-width:991.98px)
+{
+.navbar-collapse
+{
+    /*Color de la letras blanco*/
+    background-color: rgba(255, 255, 255, 0.95);
+    /*Margen de cada texto*/
+    margin-top: 15px;
+    /*Borde del cuadradito*/
+    border-radius: 10px;
+    /*Espacio interno*/
+    padding: 20px;
+    /*Desenfoque a o que esta detras del menu*/
+    backdrop-filter: blur(10px);
+}
+.nav-link
+{
+    /*Definimos color de los enlaces*/
+    color: var(--dark-blue);
+    /*Añade espacio interno en el enlace*/
+    padding: 12px 0;
+    /*Separa verticalmente entre ellos*/
+    margin: 5px 0;
+    /*Rendonde las esquinas del enlace*/
+    border-radius: 8px;
+    /*Alineamos el texto en el centro*/
+    text-align: center;
+}
+.nav-link:active
+{
+    /*Cambia el color de fodo a naranja*/
+    background-color: var(--primary-orange);
+    /*Cambia el color de fodo a blanco*/
+    color: var(--white);
+    /*Anula los valores por defecto*/
+    transform: none;
+}
+.dropdown-menu 
+{
+    /*Al mini menu se le agrega un color de fondo azul*/
+    background-color: var(--secondary-blue);
+    /*El amrgin para cada opcion*/
+    margin: 10px 0;
+    /*Elimina sombras por defecto*/
+    box-shadow: none;
+
+}
+.dropdown-item
+{
+    /*Color de al letra blanco*/
+    color: var(--white);
+    /*Alineacion del texto central*/
+    text-align: center;
+}
+}
+/*Estilos del ususario*/
+.user-profile-desktop
+{
+    /*Le ponemos a la letra color blanco*/
+    color: var(--white);
+}
+.user-info
+{
+    /*Coloca espacio enetre las lineas de trexto*/
+    line-height: 1.2;
+}
+.user-fecha
+{
+    /*Tamaño ajustable con el espacio disponible*/
+    font-size: 0.75rem;
+    /*Opacidad de 0.8 para no interferir mucho en la vista*/
+    opacity: 0.8;
+    /*Tamaño "normal"*/
+    font-weight: 400;
+}
+.user-account-tipo
+{
+    /*Tamaño ajustable al espacio disponible*/
+    font-size: 0.7rem;
+    /*Opacidad de 0.7 para no interferir mucho en la vista*/
+    opacity: 0.7;
+    /*Estilo de letra*/
+    font-style: italic;
+}
+.user-name
+{
+    /*Tamaña ajustable al espacio disponible*/
+    font-size: 0.9rem;
+    /*Intensidad*/
+    font-weight: 600px;
+    /*margen de arriba*/
+    margin-top: 2px;
+}
+.user-avatar img 
+{
+    /*Tamñao de imagen*/
+    width: 50px;
+    height: 50px;
+    /*Borde naranja*/
+    border: 3px solid var(--primary-orange);
+    /*Tiempo de transicion*/
+    transition: all 0.3s ease;
+    /*Color de fondo*/
+    background-color: var(--white);
+}
+.user-avatar img:hover
+{
+    /*Si se posiciona encima*/
+    border-color: var(--dark-blue);
+    /*Aument eun pcoo ele tamaño*/
+    transform: scale(1.05);
+}
+
+@media(max-width: 1200px)
+{
+.user-name
+{
+    font-size: 0.8rem;
+}
+.user-fecha
+{
+    font-size: 0.7rem;
+}
+.user-account-tipo
+{
+    font-size: 0.65rem;
+}
+.user-profile-mobile
+{
+    /*Le ponemos a la letra color blanco*/
+    color: var(--dark-blue);
+}
+}
+/*Codigo pra el dropdown del usuario*/
+.user-dropdown 
+{
+    position: relative;
+}
+.user-dropdown-menu
+{
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(30, 58, 138, 0.2);
+    padding: 20px;
+    min-width: 280px;
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(157, 180, 192, 0.3);
+}
+.user-dropdown-menu.show
+{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-10px);
+}
+.user-dropdown-header
+{
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(157, 180, 192, 0.2);
+    margin-bottom: 15px;
+}
+.user-dropdown-avatar
+{
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--primary-orange) ;
+    margin: 0 auto 10px;
+}
+.user-dropdown-name
+{
+    color: var(--dark-blue);
+    font-weight: 700;
+    font-size:1rem;
+    margin-bottom: 5px;
+}
+.user-dropdown-email
+{
+    color: var(--secondary-blue);
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.user-dropdown-account-tipo
+{
+    background: linear-gradient(135deg, var(--primary-orange), #e8850f) ;
+    color: var(--white);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 8px;
+}
+.user-dropdown-actions
+{
+    padding-top: 15px;
+}
+.user-dropdown-item
+{
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    color: var(--dark-blue);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3 ease;
+    font-size: 0.9rem;
+}
+.user-dropdown-item:hover {
+  background-color: rgba(157, 180, 192, 0.1);
+  color: var(--dark-blue);
+  text-decoration: none;
+  padding-left: 10px;
+}
+
+.user-dropdown-item.logout {
+  color: #dc3545;
+  border-top: 1px solid rgba(157, 180, 192, 0.2);
+  margin-top: 10px;
+  padding-top: 15px;
+}
+
+.user-dropdown-item.logout:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.user-dropdown-icon {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Clickable avatar cursor */
+.user-avatar {
+  cursor: pointer;
+}
+
+/* Mobile dropdown adjustments */
+@media (max-width: 991.98px) {
+  .user-dropdown-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%) scale(0.9);
+    min-width: 300px;
+    max-width: 90vw;
+  }
+
+  .user-dropdown-menu.show {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Overlay for mobile */
+.dropdown-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.dropdown-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Navbar collapse custom styles */
+.navbar-collapse.show {
+  display: block;
+}
+
+.navbar-collapse.collapsing {
+  transition: height 0.35s ease;
+}
+
+.user-information
+{
+    position: relative;
+    display: inline-block;
+}
+.user-information-menu
+{
+display: none;
+position: absolute;
+top: 100%;
+left: 0;
+min-width: 200px;
+background: var(--white);
+border: 1px solid #d4edda;
+border: 0.25rem;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+z-index: 1000;
+}
+.user-dropdown:hover .user-dropdown-menu
+{
+    display: block;
+}
+.user-informacion
+{
+    cursor: pointer;
+    padding: 10px;
+}
+/* ======================= */
+/*     ESTILOS RESPONSIVE  */
+/* ======================= */
+@media (max-width: 1024px) {
+    body {
+        padding: 0 10px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    .container, .content, .card, form, section {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    header, nav, footer {
+        flex-direction: column !important;
+        text-align: center;
+    }
+    .container, .content, .card, form, section {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
