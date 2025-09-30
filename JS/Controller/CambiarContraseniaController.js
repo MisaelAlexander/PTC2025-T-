@@ -85,7 +85,7 @@ form.addEventListener("submit", async (e) => {
             console.warn("No se recibieron datos completos del usuario para el historial");
         }
         mostrarNotificacion("Contraseña cambiada con exito", "exito");
-        setTimeout(() => window.location.href = "login.html", 2000);
+        setTimeout(() => window.location.href = "index.html", 2000);
     } else {
         mostrarNotificacion(resultado.mensaje || "Error al cambiar la contraseña", "error");
     }
