@@ -218,7 +218,17 @@ async function cargarTiposVisita() {
 // ==========================
 async function cargarDisponibilidad(idInmueble) {
   try {
-    const visitas = await obtenerVisitasPorInmueble(idInmueble);
+    let visitas = await obtenerVisitasPorInmueble(idInmueble);
+
+    // Asegurarnos de que sea un array
+    if (!Array.isArray(visitas)) {
+      if (visitas && Array.isArray(visitas.data)) {
+        visitas = visitas.data; // si tu API devuelve {data: [...]}
+      } else {
+        visitas = []; // ningún registro
+      }
+    }
+
     occupiedTimes = {};
 
     visitas.forEach(v => {
@@ -232,14 +242,17 @@ async function cargarDisponibilidad(idInmueble) {
       occupiedTimes[fecha].add(hora);
     });
 
+    // Convertir sets a arrays
     for (let fecha in occupiedTimes) {
       occupiedTimes[fecha] = Array.from(occupiedTimes[fecha]);
     }
+
   } catch (error) {
     console.error("Error cargando disponibilidad:", error);
     mostrarNotificacion("Error al cargar disponibilidad", "error");
   }
 }
+
 
 // ==========================
 // Verificar slot disponible
