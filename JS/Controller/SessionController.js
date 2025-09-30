@@ -41,7 +41,25 @@ if (auth.user?.rol === "Vendedor") {
     </ul>
   `;
 }
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  sidebar.classList.toggle("closed"); // para colapsar en desktop
+}
 
+// Para móviles (botón hamburguesa)
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleButton = document.getElementById("toggleButton");
+  const sidebar = document.getElementById("sidebar");
+
+  if (toggleButton) {
+    toggleButton.addEventListener("click", () => {
+      sidebar.classList.toggle("open"); // abre/cierra en móvil
+    });
+  }
+});
+
+// Hacer global toggleSidebar() (porque lo llamas desde HTML inline)
+window.toggleSidebar = toggleSidebar;
 
   // Insertamos todo en el sidebar
   sidebar.innerHTML = sidebarHTML;
