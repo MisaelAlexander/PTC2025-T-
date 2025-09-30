@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         card.addEventListener("click", () => {
           guardarVistaEnHistorial(casa, "visto");
-          window.location.href = `VistaCasa.html?id=${casa.idinmuebles}`;
+          window.location.href = `Vistacasa.html?id=${casa.idinmuebles}`;
         });
 
         if (role.isVendedor()) {
