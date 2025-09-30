@@ -19,7 +19,7 @@ export function ensureMenuLinks(shouldShow) {
       <span class="title">Arqos</span>
     </div>
     <ul class="menu">
-      <li><ion-icon name="home-outline"></ion-icon><span class="text"><a href="Index.html">Menu</a></span></li>
+      <li><ion-icon name="home-outline"></ion-icon><span class="text"><a href="menu.html">Menu</a></span></li>
       <li><ion-icon name="time-outline"></ion-icon><span class="text"><a href="VerVisitas.html">Visitas</a></span></li>
       <li><ion-icon name="archive-outline"></ion-icon><span class="text"><a href="Historial.html">Historial</a></span></li>
       <li><ion-icon name="person-circle-outline"></ion-icon><span class="text"><a href="perfil.html">Perfil</a></span></li>
