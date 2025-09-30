@@ -23,10 +23,9 @@ export function ensureMenuLinks(shouldShow) {
       <li><ion-icon name="time-outline"></ion-icon><span class="text"><a href="VerVisitas.html">Visitas</a></span></li>
       <li><ion-icon name="archive-outline"></ion-icon><span class="text"><a href="Historial.html">Historial</a></span></li>
       <li><ion-icon name="person-circle-outline"></ion-icon><span class="text"><a href="perfil.html">Perfil</a></span></li>
-      <li><ion-icon name="notifications-outline"></ion-icon><span class="text"><a href="Notificaciones.html">Notificaciones</a></span></li>
     </ul>
   `;
-
+// <li><ion-icon name="notifications-outline"></ion-icon><span class="text"><a href="Notificaciones.html">Notificaciones</a></span></li>
   // Botones según rol
 if (auth.user?.rol === "Vendedor") {
   sidebarHTML += `
