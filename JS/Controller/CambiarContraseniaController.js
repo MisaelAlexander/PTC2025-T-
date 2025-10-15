@@ -29,12 +29,35 @@ function mostrarNotificacion(mensaje, tipo = "exito") {
     }, 2000);
 }
 
+// Función para el ojo de contraseña
+function inicializarTogglePassword() {
+    document.querySelectorAll(".toggle-password").forEach(icon => {
+        icon.addEventListener("click", () => {
+            const inputId = icon.getAttribute("data-target");
+            const input = document.getElementById(inputId);
+            const svg = icon.querySelector("svg");
+
+            if (!input) {
+                console.error("No se encontró el input con id:", inputId);
+                return;
+            }
+
+            if (input.type === "password") {
+                input.type = "text";
+                svg.setAttribute("fill", "#1E3A8A"); // activo - color primario
+            } else {
+                input.type = "password";
+                svg.setAttribute("fill", "gray"); // inactivo
+            }
+        });
+    });
+}
 
 // Función para guardar en el historial
 async function guardarCambioContraseniaHistorial(usuario) {
     try {
-         const fechaManana = new Date();
-            fechaManana.setDate(fechaManana.getDate() + 1);
+        const fechaManana = new Date();
+        fechaManana.setDate(fechaManana.getDate() + 1);
         const datosHistorial = {
             descripcion: `Has cambiado la contraseña`,
             fecha: fechaManana.toISOString(),
@@ -47,7 +70,8 @@ async function guardarCambioContraseniaHistorial(usuario) {
         console.error("Error al guardar en historial:", error);
     }
 }
-//Manejar Submmit
+
+// Manejar Submit
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -84,9 +108,14 @@ form.addEventListener("submit", async (e) => {
         } else {
             console.warn("No se recibieron datos completos del usuario para el historial");
         }
-        mostrarNotificacion("Contraseña cambiada con exito", "exito");
+        
         setTimeout(() => window.location.href = "index.html", 2000);
     } else {
         mostrarNotificacion(resultado.mensaje || "Error al cambiar la contraseña", "error");
     }
+});
+
+// Inicializar la funcionalidad del ojo cuando se carga la página
+document.addEventListener("DOMContentLoaded", () => {
+    inicializarTogglePassword();
 });
