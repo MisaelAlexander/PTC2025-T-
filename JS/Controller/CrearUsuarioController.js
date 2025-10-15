@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById("registroForm");
     const fotoInput = document.getElementById("foto");
     const preview = document.getElementById("preview");
+    const placeholder = document.getElementById("placeholder"); // Capturamos el placeholder
 
     // Notificación
     const notificacion = document.getElementById("notificacion");
@@ -69,24 +70,30 @@ document.addEventListener('DOMContentLoaded', () => {
         mostrarNotificacion(mensaje, "exito");
     }
 
-    // Vista previa de la foto
+    // Vista previa de la foto - MODIFICADO
     fotoInput.addEventListener("change", (e) => {
         const file = e.target.files[0];
         if (!file) {
+            // Si no hay archivo, mostrar placeholder y ocultar preview
             preview.style.display = "none";
             preview.src = "";
+            placeholder.style.display = "block"; // Mostrar "Sin foto"
             return;
         }
+        
         if (!file.type.startsWith("image/")) {
             mostrarError("Por favor selecciona una imagen válida.");
             fotoInput.value = "";
             preview.style.display = "none";
+            placeholder.style.display = "block"; // Mostrar "Sin foto"
             return;
         }
+        
         const reader = new FileReader();
         reader.onload = function(event) {
             preview.src = event.target.result;
             preview.style.display = "block";
+            placeholder.style.display = "none"; // Ocultar "Sin foto" cuando hay imagen
         };
         reader.readAsDataURL(file);
     });
@@ -185,6 +192,11 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarExito("¡Registro completado con éxito!");
             form.reset();
 
+            // Resetear también la vista de la foto
+            preview.style.display = "none";
+            preview.src = "";
+            placeholder.style.display = "block"; // Mostrar "Sin foto" de nuevo
+
             setTimeout(() => {
                 window.location.href = "CrearUsuario1.html";
             }, 3000);
@@ -192,4 +204,4 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarError(error.message || "Error al registrar el usuario.");
         }
     });
-});
+});a
