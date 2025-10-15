@@ -5,25 +5,29 @@ import {estaadentro} from "../Controller/SessionController.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     // Si ya hay cookie activa, te manda al menú
-  estaadentro();
+    estaadentro();
 
+    // Control del ojo de contraseña (SVG) - CORREGIDO
+    document.querySelectorAll(".toggle-password").forEach(icon => {
+        icon.addEventListener("click", () => {
+            const inputId = icon.getAttribute("data-target");
+            const input = document.getElementById(inputId);
+            const svg = icon.querySelector("svg");
 
-  //  Control del ojo de contraseña (SVG)
-  document.querySelectorAll(".toggle-password").forEach(icon => {
-    icon.addEventListener("click", () => {
-      const inputId = icon.getAttribute("data-target");
-      const input = document.getElementById(inputId);
-      const svg = icon.querySelector("svg");
+            if (!input) {
+                console.error("No se encontró el input con id:", inputId);
+                return;
+            }
 
-      if (input.type === "password") {
-        input.type = "text";
-        svg.setAttribute("fill", "black"); // activo
-      } else {
-        input.type = "password";
-        svg.setAttribute("fill", "gray"); // inactivo
-      }
+            if (input.type === "password") {
+                input.type = "text";
+                svg.setAttribute("fill", "#1E3A8A"); // activo - color primario
+            } else {
+                input.type = "password";
+                svg.setAttribute("fill", "gray"); // inactivo
+            }
+        });
     });
-  });
   
     function mostrarNotificacion(mensaje, tipo = "exito") {
         const notificacion = document.getElementById("notificacion");
@@ -33,8 +37,20 @@ document.addEventListener("DOMContentLoaded", () => {
         notificacion.className = `notificacion ${tipo}`;
         notificacion.style.display = "block";
 
+        // Aplicar la animación de entrada
         setTimeout(() => {
-            notificacion.style.display = "none";
+            notificacion.style.transform = "translateX(0)";
+            notificacion.style.opacity = "1";
+        }, 10);
+
+        setTimeout(() => {
+            // Animación de salida
+            notificacion.style.transform = "translateX(400px)";
+            notificacion.style.opacity = "0";
+            
+            setTimeout(() => {
+                notificacion.style.display = "none";
+            }, 300);
         }, 2000);
     }
 
@@ -110,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const loginResult = await login(usuario, contrasena);
 
             if (!loginResult) {
-                mostrarNotificacion(loginResult.message || "Error en login", "error");
+                mostrarNotificacion(loginResult?.message || "Error en login", "error");
                 return;
             }
 
@@ -148,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
         registerDiv.addEventListener("click", async (e) => {
             e.preventDefault();
 
-            //  Eliminado uso de localStorage para autenticación
+            // Eliminado uso de localStorage para autenticación
             const existeId = localStorage.getItem("iddescripcion");
 
             if (existeId) {
