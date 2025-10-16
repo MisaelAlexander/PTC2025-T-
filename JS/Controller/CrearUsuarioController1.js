@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
       notificacion.style.display = "none";
     }, 2000);
   }
-
+});
   // Control del ojo de contraseña (SVG) - CORREGIDO Y MEJORADO
 document.querySelectorAll(".toggle-password").forEach(icon => {
     icon.addEventListener("click", () => {
@@ -140,5 +140,4 @@ document.querySelectorAll(".toggle-password").forEach(icon => {
             path.setAttribute("d", "M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-6a2 2 0 1 0 .001 3.999A2 2 0 0 0 12 10Z");
         }
     });
-});
 });
