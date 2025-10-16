@@ -83,7 +83,7 @@ body {
 
 /* TARJETAS DE COMENTARIOS - Adaptado al JS */
 .comment-card {
-    margin-left:50%;
+    margin-left:20%;
     background: var(--white);
     padding: 1.5rem;
     border-radius: 12px;
