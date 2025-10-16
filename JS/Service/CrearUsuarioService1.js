@@ -8,7 +8,7 @@ export async function guardarUsuario(usuarioData) {
         headers: {
             "Content-Type": "application/json"
         },
-        credentials: 'include',
+        credentials: 'omit',
         body: JSON.stringify(usuarioData)
     });
     if (!response.ok) {
