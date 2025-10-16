@@ -313,19 +313,27 @@ guardarBtn?.addEventListener('click', async () => {
    
   });
 
- // Eliminar / desactivar cuenta
+// Eliminar / desactivar cuenta
 eliminarCuentaBtn?.addEventListener('click', () => {
     confirmacionDesactivar.style.display = "block";
 });
 
-btnCancelar?.addEventListener('click', () => confirmacionDesactivar.style.display = "none");
+btnCancelar?.addEventListener('click', () => {
+    confirmacionDesactivar.style.display = "none";
+});
 
 btnConfirmar?.addEventListener('click', async () => {
+
     
-    if (!usuario) return;
+    if (!usuario) {
+
+        return;
+    }
 
     try {
-        // Cambia esta parte para usar el nuevo endpoint
+
+        
+        // Asegúrate de importar desactivarCuenta al inicio del archivo
         await desactivarCuenta(usuario.idusuario || usuario.IDUsuario);
         
         localStorage.removeItem('usuario');
@@ -333,8 +341,9 @@ btnConfirmar?.addEventListener('click', async () => {
         confirmacionDesactivar.style.display = "none";
         setTimeout(() => window.location.href = "index.html", 1500);
     } catch (error) {
-        console.error(error);
+
         mostrarNotificacion("Error al desactivar cuenta.", "error");
     }
 });
+
 });
