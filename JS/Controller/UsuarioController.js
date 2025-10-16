@@ -24,9 +24,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const notificacionMensaje = document.getElementById("notificacionMensaje");
 
     // Confirmación de desactivación
-    const confirmacionDesactivar = document.getElementById("confirmacionDesactivar");
-    const btnConfirmar = document.getElementById("btnConfirmar");
-    const btnCancelar = document.getElementById("btnCancelar");
+    const confirmacionDesactivar = document.getElementById("modalConfirm");
+    const btnConfirmar = document.getElementById("modalSi");
+    const btnCancelar = document.getElementById("modalNo");
 
 
     function mostrarModalConfirm(mensaje) {
