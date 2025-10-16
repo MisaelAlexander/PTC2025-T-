@@ -20,4 +20,9 @@ export async function guardarUsuario(usuarioData) {
     }
     return await response.json();
 }
+// Función para mostrar mensajes de error al repetirse valor
+export async function checkUsuario(usuario) {
+    const res = await fetch(`${API_USUARIO}/check-usuario?usuario=${encodeURIComponent(usuario)}`);
+    return res.json();
+}
 
