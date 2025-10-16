@@ -80,7 +80,7 @@ body {
   box-shadow: var(--shadow);
   transition: transform 0.2s;
   position:relative;
-  margin-left: -90%;
+  margin-left: -50%;
 }
 .comment-card:hover { transform: scale(1.015); }
 .comment-head { display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem; margin-bottom:0.4rem; }
