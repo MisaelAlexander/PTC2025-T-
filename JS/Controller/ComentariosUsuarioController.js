@@ -7,7 +7,7 @@ import {
   obtenerIdUsuarioInmueble
 } from "../Service/ComentarioUsuarioService.js";
 
-import { requireAuth, auth, role } from "./SessionController.js"; // ✅ igual que el ejemplo
+import { requireAuth, auth, role } from "./SessionController.js";
 
 // =================== ELEMENTOS ===================
 const form = document.querySelector(".comment-form");
@@ -247,6 +247,6 @@ btnConfirmar.addEventListener("click", async () => {
 
 // ======= INICIAL =======
 document.addEventListener("DOMContentLoaded", async () => {
-  await requireAuth(); // ✅ protege igual que el ejemplo
+  await requireAuth(); // protege igual que el ejemplo
   cargarComentarios();
 });
