@@ -1,4 +1,3 @@
-// Controller/SessionController.js
 import { me, logout as logoutService } from "../Service/AuthService.js";
 
 // Estado global de sesión
@@ -6,6 +5,9 @@ export const auth = {
   ok: false,
   user: null,
 };
+
+// Variable para evitar bucles
+let isCheckingAuth = false;
 
 // -------------------- SIDEBAR MANAGER --------------------
 class SidebarManager {
@@ -19,12 +21,6 @@ class SidebarManager {
         this.init();
     }
 
-    init() {
-        this.bindEvents();
-        this.handleResize();
-        this.applyCollapsedState();
-    }
-
     createOverlay() {
         const overlay = document.createElement('div');
         overlay.className = 'sidebar-overlay';
@@ -32,24 +28,25 @@ class SidebarManager {
         return overlay;
     }
 
+    init() {
+        this.bindEvents();
+        this.handleResize();
+        this.applyCollapsedState();
+    }
+
     bindEvents() {
-        // Toggle button
         if (this.toggleButton) {
             this.toggleButton.addEventListener('click', () => this.toggleSidebar());
         }
 
-        // Overlay click
         this.overlay.addEventListener('click', () => this.closeSidebar());
 
-        // Resize handler
         window.addEventListener('resize', () => this.handleResize());
 
-        // Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') this.closeSidebar();
         });
 
-        // Cerrar sidebar al hacer clic en un link (en móvil)
         if (this.sidebar) {
             this.sidebar.addEventListener('click', (e) => {
                 if (e.target.tagName === 'A' && this.isMobile) {
@@ -61,14 +58,12 @@ class SidebarManager {
 
     toggleSidebar() {
         if (this.isMobile) {
-            // En móvil: abrir/cerrar completo
             if (this.sidebar.classList.contains('open')) {
                 this.closeSidebar();
             } else {
                 this.openSidebar();
             }
         } else {
-            // En desktop: colapsar/expandir
             this.toggleCollapse();
         }
     }
@@ -83,7 +78,6 @@ class SidebarManager {
             this.sidebar.classList.remove('collapsed');
         }
         
-        // Actualizar el estado del botón si existe
         if (this.toggleButton) {
             if (this.isCollapsed) {
                 this.toggleButton.classList.add('collapsed');
@@ -122,11 +116,9 @@ class SidebarManager {
         
         if (wasMobile !== this.isMobile) {
             if (!this.isMobile) {
-                // Al cambiar a desktop, cerrar overlay y aplicar estado colapsado
                 this.closeSidebar();
                 this.applyCollapsedState();
             } else {
-                // Al cambiar a móvil, quitar estado colapsado
                 this.sidebar.classList.remove('collapsed');
                 if (this.toggleButton) {
                     this.toggleButton.classList.remove('collapsed');
@@ -135,7 +127,6 @@ class SidebarManager {
         }
     }
 
-    // Para el toggle desde HTML (compatibilidad con tu código existente)
     static toggleSidebar() {
         const manager = window.sidebarManager;
         if (manager) {
@@ -147,71 +138,96 @@ class SidebarManager {
 // -------------------- MENU DINÁMICO --------------------
 export function ensureMenuLinks(shouldShow) {
   const sidebar = document.getElementById("sidebar");
+  if (!sidebar) return;
+
   if (shouldShow) {
-     // Botones comunes a todos
-  let sidebarHTML = `
-    <div class="sidebar-header" onclick="SidebarManager.toggleSidebar()">
-      <ion-icon name="menu-outline" class="cloud"></ion-icon>
-      <span class="title">Arqos</span>
-    </div>
-    <ul class="menu">
-      <li><a href="menu.html"><ion-icon name="home-outline"></ion-icon><span class="text">Menu</span></a></li>
-      <li><a href="VerVisitas.html"><ion-icon name="time-outline"></ion-icon><span class="text">Visitas</span></a></li>
-      <li><a href="Historial.html"><ion-icon name="archive-outline"></ion-icon><span class="text">Historial</span></a></li>
-      <li><a href="perfil.html"><ion-icon name="person-circle-outline"></ion-icon><span class="text">Perfil</span></a></li>
-    </ul>
-  `;
 
-  // Botones según rol
-  if (auth.user?.rol === "Vendedor") {
-    sidebarHTML += `
-      <button class="create-btn">
-        <a href="Publicar.html"><ion-icon name="add-circle-outline"></ion-icon><span class="text">Publicar Casa</span></a>
-      </button>
-    `;
-  } else if (auth.user?.rol === "Usuario") {
-    sidebarHTML += `
+    
+    let sidebarHTML = `
+      <div class="sidebar-header" onclick="SidebarManager.toggleSidebar()">
+        <ion-icon name="menu-outline" class="cloud"></ion-icon>
+        <span class="title">Arqos</span>
+      </div>
       <ul class="menu">
-        <li><a href="Favoritos.html"><ion-icon name="star-outline"></ion-icon><span class="text">Favoritos</span></a></li>
-      </ul>
+        <li><a href="menu.html"><ion-icon name="home-outline"></ion-icon><span class="text">Menu</span></a></li>
+        <li><a href="VerVisitas.html"><ion-icon name="time-outline"></ion-icon><span class="text">Visitas</span></a></li>
+        <li><a href="Historial.html"><ion-icon name="archive-outline"></ion-icon><span class="text">Historial</span></a></li>
+        <li><a href="perfil.html"><ion-icon name="person-circle-outline"></ion-icon><span class="text">Perfil</span></a></li>
     `;
-  }
 
-  // Insertamos todo en el sidebar
-  sidebar.innerHTML = sidebarHTML;
-
-  // Inicializar el SidebarManager después de cargar el contenido
-  setTimeout(() => {
-    if (!window.sidebarManager) {
-      window.sidebarManager = new SidebarManager();
-      window.toggleSidebar = SidebarManager.toggleSidebar;
+    if (auth.user?.rol === "Vendedor") {
+      sidebarHTML += `
+        </ul>
+        <button class="create-btn">
+          <a href="Publicar.html"><ion-icon name="add-circle-outline"></ion-icon><span class="text">Publicar Casa</span></a>
+        </button>
+      `;
+    } else if (auth.user?.rol === "Usuario") {
+      sidebarHTML += `
+        <li><a href="Favoritos.html"><ion-icon name="star-outline"></ion-icon><span class="text">Favoritos</span></a></li>
+        </ul>
+      `;
+    } else {
+      sidebarHTML += `</ul>`;
     }
-  }, 100);
+
+    sidebar.innerHTML = sidebarHTML;
+
+    setTimeout(() => {
+      if (!window.sidebarManager) {
+        window.sidebarManager = new SidebarManager();
+        window.toggleSidebar = SidebarManager.toggleSidebar;
+      }
+    }, 100);
 
   } else {
+
     if (sidebar) sidebar.innerHTML = "";
-    window.location.replace("index.html");
+    
+    const currentPage = window.location.pathname;
+    const protectedPages = ['menu.html', 'vervisitas.html', 'historial.html', 'perfil.html', 'publicar.html', 'favoritos.html'];
+    const isProtectedPage = protectedPages.some(page => currentPage.includes(page));
+    
+    if (isProtectedPage) {
+
+      window.location.replace("index.html");
+    }
   }
 }
 
 // -------------------- RENDER USER --------------------
 export async function renderUser() {
+  if (isCheckingAuth) {
+
+    return;
+  }
+  
+  isCheckingAuth = true;
+  console.log("Iniciando renderUser...");
+
   try {
     const info = await me();
     auth.ok = !!info?.authenticated;
     auth.user = info?.user ?? null;
 
-    if (auth.ok && (role.isUsuario() || role.isVendedor())) {
-      ensureMenuLinks(true);
-    } else {
-      auth.ok = false;
-      auth.user = null;
-      ensureMenuLinks(false);
-    }
-  } catch {
+
+
+    const shouldShowMenu = auth.ok && (role.isUsuario() || role.isVendedor());
+    ensureMenuLinks(shouldShowMenu);
+
+  } catch (error) {
+    console.error("Error en renderUser:", error);
     auth.ok = false;
     auth.user = null;
-    ensureMenuLinks(false);
+    
+    const currentPage = window.location.pathname;
+    const isLoginPage = currentPage.includes('index.html') || currentPage === '/';
+    
+    if (!isLoginPage) {
+      ensureMenuLinks(false);
+    }
+  } finally {
+    isCheckingAuth = false;
   }
 }
 
@@ -227,20 +243,35 @@ export async function requireAuth({ redirect = true } = {}) {
   }
 
   if (!auth.ok && redirect) {
+
     window.location.replace("index.html");
   }
+  
   return auth.ok;
 }
 
 // -------------------- LOGOUT CENTRAL --------------------
 export async function cerrarSesion() {
-  const ok = await logoutService();
-  localStorage.removeItem("usuario");
-  if (ok) {
-    window.location.href = "index.html";
-  } else {  
-    alert("Error al cerrar sesión. Intenta de nuevo.");
+  console.log("Iniciando cierre de sesión...");
+  
+  // Limpiar estado local inmediatamente
+  auth.ok = false;
+  auth.user = null;
+  
+  try {
+    const ok = await logoutService();
+
+  } catch (error) {
+    console.error("Error en logout service:", error);
   }
+  
+  // Limpiar localStorage
+  localStorage.removeItem("usuario");
+  localStorage.removeItem("sidebarCollapsed");
+  
+  console.log("Redirigiendo a login...");
+  // Usar replace para evitar que el usuario vuelva atrás a la página protegida
+  window.location.replace("index.html?logout=success");
 }
 
 // -------------------- HELPERS --------------------
@@ -270,36 +301,38 @@ export const role = {
 };
 
 // -------------------- EVENT LISTENERS --------------------
-window.addEventListener("pageshow", async () => {
-  await renderUser();
+window.addEventListener("pageshow", async (event) => {
+  if (event.persisted) {
+    return;
+  }
+  
+  // Pequeño delay para evitar conflictos con otras inicializaciones
+  setTimeout(() => {
+    renderUser();
+  }, 100);
 });
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-  // El SidebarManager se inicializará después de ensureMenuLinks
+  console.log("DOM cargado - SessionController listo");
 });
-
-// También inicializar cuando se cargue dinámicamente
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    // El SidebarManager se inicializará después de ensureMenuLinks
-  });
-}
 
 // -------------------- REDIRECCIÓN SI YA ESTÁ AUTENTICADO --------------------
 export async function estaadentro() {
-  try {
-    const info = await me();
-    const ok = !!info?.authenticated;
-    const user = info?.user ?? null;
+  const currentPage = window.location.pathname;
+  const isLoginPage = currentPage.includes('index.html') || currentPage === '/';
+  
+  if (!isLoginPage) return;
 
-    if (ok && user) {
-      // Si hay sesión activa, lo devolvemos al menu asi evitamos problema
-      window.location.replace("menu.html");
+  try {
+
+    const info = await me();
+    if (info?.authenticated && info.user) {
+      setTimeout(() => {
+        window.location.href = "menu.html";
+      }, 100);
     }
-    // Si no hay sesión, se queda en la página actual (normalmente index.html)
-  } catch {
-    // Si hay error en la verificación, también se queda en la página actual
+  } catch (error) {
   }
 }
 
