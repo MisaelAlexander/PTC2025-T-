@@ -394,7 +394,7 @@
 
 /* Agrega esto a tu CSS/Sidebar.css */
 
-/* ESTADO COLAPSADO */
+/* ESTADO COLAPSADO - ICONOS MANTIENEN TAMAÑO */
 .sidebar.collapsed {
     width: 80px;
 }
@@ -407,6 +407,7 @@
     overflow: hidden;
 }
 
+/* MENÚ - Iconos mantienen tamaño */
 .sidebar.collapsed .menu li a {
     justify-content: center;
     padding: 1rem;
@@ -414,12 +415,15 @@
 
 .sidebar.collapsed .menu li a ion-icon {
     margin-right: 0;
-    font-size: 1.6rem;
+    font-size: 1.4rem; /* Mismo tamaño que cuando está expandido */
+    min-width: 24px; /* Asegura que mantenga el ancho */
 }
 
+/* BOTÓN PUBLICAR - Icono mantiene tamaño */
 .sidebar.collapsed .create-btn {
     padding: 1rem;
     justify-content: center;
+    min-height: 50px; /* Mantiene altura */
 }
 
 .sidebar.collapsed .create-btn .text {
@@ -428,9 +432,11 @@
 
 .sidebar.collapsed .create-btn ion-icon {
     margin-right: 0;
-    font-size: 1.4rem;
+    font-size: 1.4rem; /* Mismo tamaño */
+    min-width: 24px;
 }
 
+/* HEADER - Icono mantiene tamaño */
 .sidebar.collapsed .sidebar-header {
     justify-content: center;
     padding: 2rem 1rem 1.5rem;
@@ -438,6 +444,7 @@
 
 .sidebar.collapsed .sidebar-header .cloud {
     margin-right: 0;
+    font-size: 1.8rem; /* Mismo tamaño que cuando está expandido */
 }
 
 /* MAIN CONTENT - Se ajusta según sidebar colapsado */
@@ -458,4 +465,12 @@
 /* Botón hamburguesa en estado colapsado */
 .toggleButton.collapsed ion-icon {
     transform: rotate(180deg);
+}
+
+/* Asegurar que todos los iconos mantengan tamaño consistente */
+.sidebar.collapsed .menu li a ion-icon,
+.sidebar.collapsed .create-btn ion-icon,
+.sidebar.collapsed .sidebar-header .cloud {
+    transform: none; /* Eliminar cualquier transform que afecte tamaño */
+    transition: none; /* Quitar transiciones que puedan afectar */
 }
