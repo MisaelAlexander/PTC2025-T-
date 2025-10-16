@@ -1,4 +1,4 @@
-import { actualizarUsuarioCompleto, obtenerUbicaciones, subirFotoUsuario, desactivarUsuario, obtenerUsuarioPorId, desactivarCuenta } from '../Service/UsuarioService.js';
+import { actualizarUsuarioCompleto, obtenerUbicaciones, subirFotoUsuario, obtenerUsuarioPorId, desactivarCuenta } from '../Service/UsuarioService.js';
 import { renderUser,auth,cerrarSesion } from "../Controller/SessionController.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
