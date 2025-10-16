@@ -316,10 +316,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         // CREAR
         inmuebleGuardado = await publicarInmueble(dto);
         mostrarNotificacion("Propiedad publicada con éxito!", "exito");
+
         inmuebleActualId = inmuebleGuardado.idinmuebles;
 
         //   Guardar historial de publicación
         await guardarAccionHistorial("Publicó", titulo, usuario.id);
+        setTimeout(() => {
+          window.location.href = "menu.html";
+        }, 1500);
       }
 
       // 1. Eliminar fotos marcadas
