@@ -391,3 +391,71 @@
 .sidebar::-webkit-scrollbar-thumb:hover {
     background: var(--gray-400);
 }
+
+/* Agrega esto a tu CSS/Sidebar.css */
+
+/* ESTADO COLAPSADO */
+.sidebar.collapsed {
+    width: 80px;
+}
+
+.sidebar.collapsed .title,
+.sidebar.collapsed .text {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.sidebar.collapsed .menu li a {
+    justify-content: center;
+    padding: 1rem;
+}
+
+.sidebar.collapsed .menu li a ion-icon {
+    margin-right: 0;
+    font-size: 1.6rem;
+}
+
+.sidebar.collapsed .create-btn {
+    padding: 1rem;
+    justify-content: center;
+}
+
+.sidebar.collapsed .create-btn .text {
+    display: none;
+}
+
+.sidebar.collapsed .create-btn ion-icon {
+    margin-right: 0;
+    font-size: 1.4rem;
+}
+
+.sidebar.collapsed .sidebar-header {
+    justify-content: center;
+    padding: 2rem 1rem 1.5rem;
+}
+
+.sidebar.collapsed .sidebar-header .cloud {
+    margin-right: 0;
+}
+
+/* MAIN CONTENT - Se ajusta según sidebar colapsado */
+.sidebar:not(.collapsed) + .main-content {
+    margin-left: 300px;
+}
+
+.sidebar.collapsed + .main-content {
+    margin-left: 80px;
+}
+
+@media (max-width: 768px) {
+    .sidebar.collapsed + .main-content {
+        margin-left: 0;
+    }
+}
+
+/* Botón hamburguesa en estado colapsado */
+.toggleButton.collapsed ion-icon {
+    transform: rotate(180deg);
+}

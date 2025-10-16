@@ -14,6 +14,7 @@ class SidebarManager {
         this.toggleButton = document.getElementById('toggleButton');
         this.overlay = this.createOverlay();
         this.isMobile = window.innerWidth <= 768;
+        this.isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
         
         this.init();
     }
@@ -21,6 +22,7 @@ class SidebarManager {
     init() {
         this.bindEvents();
         this.handleResize();
+        this.applyCollapsedState();
     }
 
     createOverlay() {
@@ -58,10 +60,45 @@ class SidebarManager {
     }
 
     toggleSidebar() {
-        if (this.sidebar.classList.contains('open')) {
-            this.closeSidebar();
+        if (this.isMobile) {
+            // En móvil: abrir/cerrar completo
+            if (this.sidebar.classList.contains('open')) {
+                this.closeSidebar();
+            } else {
+                this.openSidebar();
+            }
         } else {
-            this.openSidebar();
+            // En desktop: colapsar/expandir
+            this.toggleCollapse();
+        }
+    }
+
+    toggleCollapse() {
+        this.isCollapsed = !this.isCollapsed;
+        localStorage.setItem('sidebarCollapsed', this.isCollapsed);
+        
+        if (this.isCollapsed) {
+            this.sidebar.classList.add('collapsed');
+        } else {
+            this.sidebar.classList.remove('collapsed');
+        }
+        
+        // Actualizar el estado del botón si existe
+        if (this.toggleButton) {
+            if (this.isCollapsed) {
+                this.toggleButton.classList.add('collapsed');
+            } else {
+                this.toggleButton.classList.remove('collapsed');
+            }
+        }
+    }
+
+    applyCollapsedState() {
+        if (this.isCollapsed && !this.isMobile) {
+            this.sidebar.classList.add('collapsed');
+            if (this.toggleButton) {
+                this.toggleButton.classList.add('collapsed');
+            }
         }
     }
 
@@ -80,11 +117,21 @@ class SidebarManager {
     }
 
     handleResize() {
+        const wasMobile = this.isMobile;
         this.isMobile = window.innerWidth <= 768;
         
-        if (!this.isMobile) {
-            // En desktop, asegurar que el sidebar esté abierto
-            this.closeSidebar();
+        if (wasMobile !== this.isMobile) {
+            if (!this.isMobile) {
+                // Al cambiar a desktop, cerrar overlay y aplicar estado colapsado
+                this.closeSidebar();
+                this.applyCollapsedState();
+            } else {
+                // Al cambiar a móvil, quitar estado colapsado
+                this.sidebar.classList.remove('collapsed');
+                if (this.toggleButton) {
+                    this.toggleButton.classList.remove('collapsed');
+                }
+            }
         }
     }
 
@@ -103,7 +150,7 @@ export function ensureMenuLinks(shouldShow) {
   if (shouldShow) {
      // Botones comunes a todos
   let sidebarHTML = `
-    <div class="sidebar-header">
+    <div class="sidebar-header" onclick="SidebarManager.toggleSidebar()">
       <ion-icon name="menu-outline" class="cloud"></ion-icon>
       <span class="title">Arqos</span>
     </div>
@@ -119,7 +166,7 @@ export function ensureMenuLinks(shouldShow) {
   if (auth.user?.rol === "Vendedor") {
     sidebarHTML += `
       <button class="create-btn">
-        <a href="Publicar.html">+ Publicar Casa</a>
+        <a href="Publicar.html"><ion-icon name="add-circle-outline"></ion-icon><span class="text">Publicar Casa</span></a>
       </button>
     `;
   } else if (auth.user?.rol === "Usuario") {
@@ -251,6 +298,6 @@ export async function estaadentro() {
       window.location.replace("menu.html");
     }
   } catch {
-    // Si no hay cookie válida, no pasa nada y se queda en index(login)
+      window.location.replace("index.html");
   }
 }
