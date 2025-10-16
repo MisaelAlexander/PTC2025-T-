@@ -79,7 +79,7 @@ export async function subirFotoUsuario(file) {
 
 // Desactivar usuario
 // Service JavaScript - agrega esta función
-export async function desactivarCuenta(id) {
+export async function desactivarUsuario(id) {
     try {
         const response = await fetch(`${API_USE}/Desactivar/${id}`, {
             method: "PUT",
