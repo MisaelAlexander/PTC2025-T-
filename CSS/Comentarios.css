@@ -1,4 +1,4 @@
-/* COMENTARIOS.CSS - Diseño según imagen de referencia */
+/* COMENTARIOS.CSS - Adaptado al JavaScript proporcionado */
 :root {
     /* Misma paleta global */
     --primary: #1E3A8A;
@@ -81,7 +81,7 @@ body {
     }
 }
 
-/* TARJETAS DE COMENTARIOS - Estilo según imagen */
+/* TARJETAS DE COMENTARIOS - Adaptado al JS */
 .comment-card {
     background: var(--white);
     padding: 1.5rem;
@@ -103,93 +103,53 @@ body {
     }
 }
 
-/* HEADER COMENTARIO - Más simple como en la imagen */
-.comment-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
-
-.user-info {
+/* HEADER COMENTARIO - Adaptado al JS (.comment-head) */
+.comment-head {
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
 }
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
+.rating {
+    color: var(--secondary);
+    font-size: 1.1rem;
     font-weight: 600;
-    font-size: 1rem;
 }
 
-.user-details h4 {
+.name {
     color: var(--primary-dark);
     font-weight: 600;
-    margin-bottom: 0.25rem;
     font-size: 1rem;
 }
 
-.comment-date {
+time {
     color: var(--gray-500);
-    font-size: 0.8rem;
-}
-
-/* RATING STARS - Estilo según imagen */
-.rating-display {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.25rem;
-}
-
-.stars {
-    display: flex;
-    gap: 0.1rem;
-}
-
-.star {
-    color: var(--gray-300);
-    font-size: 1rem;
-}
-
-.star.filled {
-    color: var(--secondary);
-}
-
-.rating-text {
-    color: var(--gray-600);
     font-size: 0.85rem;
-    font-weight: 500;
+    margin-left: auto;
 }
 
-/* CONTENIDO COMENTARIO */
-.comment-content {
+/* CONTENIDO COMENTARIO - Adaptado al JS (.comment-body) */
+.comment-body {
     color: var(--gray-700);
     line-height: 1.5;
     font-size: 0.95rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
-/* ACCIONES COMENTARIO - Solo botón eliminar como en imagen */
+/* ACCIONES COMENTARIO - Adaptado al JS (.comment-actions) */
 .comment-actions {
     display: flex;
+    gap: 0.75rem;
     justify-content: flex-end;
-    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
 }
 
-.btn-eliminar {
-    background: none;
-    border: 1px solid var(--error);
-    color: var(--error);
-    padding: 0.4rem 1rem;
+.editar-btn, .borrar-btn {
+    padding: 0.5rem 1rem;
+    border: none;
     border-radius: 6px;
     font-weight: 500;
     cursor: pointer;
@@ -197,13 +157,27 @@ body {
     font-size: 0.85rem;
 }
 
-.btn-eliminar:hover {
-    background: var(--error);
+.editar-btn {
+    background: var(--primary);
     color: var(--white);
+}
+
+.editar-btn:hover {
+    background: var(--primary-dark);
     transform: translateY(-1px);
 }
 
-/* FOOTER CON FORMULARIO - Estilo compacto como en imagen */
+.borrar-btn {
+    background: var(--error);
+    color: var(--white);
+}
+
+.borrar-btn:hover {
+    background: #DC2626;
+    transform: translateY(-1px);
+}
+
+/* FOOTER CON FORMULARIO */
 .comment-footer {
     background: var(--white);
     border-top: 1px solid var(--gray-200);
@@ -211,7 +185,7 @@ body {
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* FORMULARIO COMENTARIO - Más compacto */
+/* FORMULARIO COMENTARIO */
 .comment-form {
     background: var(--white);
     margin-bottom: 1.5rem;
@@ -228,7 +202,7 @@ body {
 
 #comment {
     width: 100%;
-    min-height: 80px;
+    min-height: 100px;
     padding: 1rem;
     border: 1px solid var(--gray-300);
     border-radius: 8px;
@@ -247,7 +221,6 @@ body {
 
 #comment::placeholder {
     color: var(--gray-400);
-    font-style: italic;
 }
 
 .button-zone {
@@ -255,14 +228,15 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
-/* BOTÓN ENVIAR - Estilo simple */
+/* BOTÓN ENVIAR */
 .send-btn {
     background: var(--primary);
     color: var(--white);
     border: none;
-    padding: 0.6rem 1.5rem;
+    padding: 0.75rem 2rem;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
@@ -272,7 +246,7 @@ body {
 
 .send-btn:hover {
     background: var(--primary-dark);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }
 
 .send-btn:disabled {
@@ -281,7 +255,7 @@ body {
     transform: none;
 }
 
-/* STAR RATING EN FORMULARIO - Más compacto */
+/* STAR RATING EN FORMULARIO */
 .star-zone {
     display: flex;
     align-items: center;
@@ -291,7 +265,7 @@ body {
 .star-rating {
     display: flex;
     flex-direction: row-reverse;
-    gap: 0.1rem;
+    gap: 0.25rem;
 }
 
 .star-rating input {
@@ -299,7 +273,7 @@ body {
 }
 
 .star-rating label {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: var(--gray-300);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -314,22 +288,29 @@ body {
     color: var(--secondary);
 }
 
-/* PAGINACIÓN - Estilo simple como en imagen */
+.star-rating input:checked + label:hover,
+.star-rating input:checked + label:hover ~ label {
+    color: var(--secondary-dark);
+}
+
+/* PAGINACIÓN - Adaptado al JS */
 .pagination {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .paginacion {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .paginacion button {
-    padding: 0.4rem 0.8rem;
+    padding: 0.5rem 1rem;
     border: 1px solid var(--gray-300);
     background: var(--white);
     color: var(--gray-700);
@@ -338,6 +319,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.9rem;
+    min-width: 44px;
 }
 
 .paginacion button:hover:not(:disabled) {
@@ -357,7 +339,7 @@ body {
     cursor: not-allowed;
 }
 
-/* SELECT SIZE - Más pequeño */
+/* SELECT SIZE */
 .controls {
     display: flex;
     align-items: center;
@@ -365,7 +347,7 @@ body {
 }
 
 #selectSize {
-    padding: 0.4rem 0.8rem;
+    padding: 0.5rem 1rem;
     border: 1px solid var(--gray-300);
     border-radius: 6px;
     background: var(--white);
@@ -379,35 +361,28 @@ body {
     border-color: var(--primary);
 }
 
-/* CONFIRMACIÓN ELIMINAR - Más simple */
-.confirm-eliminar {
+/* CONFIRMACIÓN ELIMINAR - Adaptado al JS (#confirmEliminar) */
+#confirmEliminar {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
+    transform: translate(-50%, -50%);
     background: var(--white);
-    padding: 1.5rem;
+    padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     z-index: 10002;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    max-width: 300px;
+    display: none;
+    max-width: 400px;
     width: 90%;
     text-align: center;
 }
 
-.confirm-eliminar.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.confirm-eliminar p {
+#confirmEliminar p {
     color: var(--gray-800);
-    font-size: 1rem;
+    font-size: 1.1rem;
     margin-bottom: 1.5rem;
+    font-weight: 600;
 }
 
 .confirm-buttons {
@@ -416,36 +391,38 @@ body {
     justify-content: center;
 }
 
-.btn-cancelar, .btn-confirmar {
-    padding: 0.5rem 1.5rem;
+#btnCancelar, #btnConfirmar {
+    padding: 0.75rem 2rem;
     border: none;
-    border-radius: 6px;
-    font-weight: 500;
+    border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.9rem;
 }
 
-.btn-cancelar {
+#btnCancelar {
     background: var(--gray-200);
     color: var(--gray-700);
 }
 
-.btn-cancelar:hover {
+#btnCancelar:hover {
     background: var(--gray-300);
+    transform: translateY(-1px);
 }
 
-.btn-confirmar {
+#btnConfirmar {
     background: var(--error);
     color: var(--white);
 }
 
-.btn-confirmar:hover {
+#btnConfirmar:hover {
     background: #DC2626;
+    transform: translateY(-1px);
 }
 
-/* NOTIFICACIONES */
-.notificacion {
+/* NOTIFICACIONES - Adaptado al JS */
+#notificacion {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -455,38 +432,83 @@ body {
     font-weight: 600;
     z-index: 10000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateX(400px);
-    opacity: 0;
-    transition: all 0.3s ease;
+    display: none;
     max-width: 300px;
 }
 
-.notificacion.exito {
+#notificacion.exito {
     background: var(--success);
-    transform: translateX(0);
-    opacity: 1;
 }
 
-.notificacion.error {
+#notificacion.error {
     background: var(--error);
-    transform: translateX(0);
-    opacity: 1;
+}
+
+/* ESTADO VACÍO - Adaptado al JS */
+#comentariosContainer p {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--gray-500);
+    font-size: 1.1rem;
+}
+
+/* OVERLAY PARA MODAL */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 10001;
+    display: none;
+}
+
+/* Cuando el modal de confirmación está activo */
+#confirmEliminar:not([style*="display: none"]) ~ .modal-overlay {
+    display: block;
 }
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     #comentariosContainer {
-        padding: 1rem;
+        padding: 1.5rem;
     }
     
     .comment-footer {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    #comentariosContainer {
         padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .comment-card {
+        padding: 1.25rem;
+    }
+    
+    .comment-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    time {
+        margin-left: 0;
+    }
+    
+    .comment-actions {
+        justify-content: center;
     }
     
     .button-zone {
         flex-direction: column;
         align-items: stretch;
-        gap: 0.75rem;
+        gap: 1rem;
     }
     
     .star-zone {
@@ -497,23 +519,73 @@ body {
         flex-direction: column;
         gap: 1rem;
     }
+    
+    .comment-footer {
+        padding: 1rem;
+    }
+    
+    .confirm-buttons {
+        flex-direction: column;
+    }
 }
 
-/* ESTADO VACÍO */
-.empty-state {
-    text-align: center;
-    padding: 3rem 2rem;
-    color: var(--gray-500);
+@media (max-width: 480px) {
+    .comment-head {
+        font-size: 0.9rem;
+    }
+    
+    .rating {
+        font-size: 1rem;
+    }
+    
+    .comment-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .editar-btn, .borrar-btn {
+        width: 100%;
+    }
+    
+    .star-rating label {
+        font-size: 1.5rem;
+    }
+    
+    .paginacion {
+        justify-content: center;
+    }
+    
+    .paginacion button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
 }
 
-.empty-state ion-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: var(--gray-300);
+/* UTILIDADES */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-.empty-state h3 {
-    color: var(--gray-600);
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
+/* Animaciones para nuevas tarjetas */
+.comment-card.new-comment {
+    animation: highlight 1s ease-out;
+}
+
+@keyframes highlight {
+    0% {
+        background: var(--success-light);
+        transform: scale(1.02);
+    }
+    100% {
+        background: var(--white);
+        transform: scale(1);
+    }
 }
