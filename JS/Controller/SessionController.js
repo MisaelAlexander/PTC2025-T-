@@ -7,63 +7,142 @@ export const auth = {
   user: null,
 };
 
+// -------------------- SIDEBAR MANAGER --------------------
+class SidebarManager {
+    constructor() {
+        this.sidebar = document.getElementById('sidebar');
+        this.toggleButton = document.getElementById('toggleButton');
+        this.overlay = this.createOverlay();
+        this.isMobile = window.innerWidth <= 768;
+        
+        this.init();
+    }
+
+    init() {
+        this.bindEvents();
+        this.handleResize();
+    }
+
+    createOverlay() {
+        const overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+        return overlay;
+    }
+
+    bindEvents() {
+        // Toggle button
+        if (this.toggleButton) {
+            this.toggleButton.addEventListener('click', () => this.toggleSidebar());
+        }
+
+        // Overlay click
+        this.overlay.addEventListener('click', () => this.closeSidebar());
+
+        // Resize handler
+        window.addEventListener('resize', () => this.handleResize());
+
+        // Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') this.closeSidebar();
+        });
+
+        // Cerrar sidebar al hacer clic en un link (en móvil)
+        if (this.sidebar) {
+            this.sidebar.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A' && this.isMobile) {
+                    this.closeSidebar();
+                }
+            });
+        }
+    }
+
+    toggleSidebar() {
+        if (this.sidebar.classList.contains('open')) {
+            this.closeSidebar();
+        } else {
+            this.openSidebar();
+        }
+    }
+
+    openSidebar() {
+        this.sidebar.classList.add('open');
+        this.overlay.classList.add('active');
+        this.toggleButton?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeSidebar() {
+        this.sidebar.classList.remove('open');
+        this.overlay.classList.remove('active');
+        this.toggleButton?.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    handleResize() {
+        this.isMobile = window.innerWidth <= 768;
+        
+        if (!this.isMobile) {
+            // En desktop, asegurar que el sidebar esté abierto
+            this.closeSidebar();
+        }
+    }
+
+    // Para el toggle desde HTML (compatibilidad con tu código existente)
+    static toggleSidebar() {
+        const manager = window.sidebarManager;
+        if (manager) {
+            manager.toggleSidebar();
+        }
+    }
+}
+
 // -------------------- MENU DINÁMICO --------------------
 export function ensureMenuLinks(shouldShow) {
-
   const sidebar = document.getElementById("sidebar");
   if (shouldShow) {
      // Botones comunes a todos
   let sidebarHTML = `
-    <div class="sidebar-header" onclick="toggleSidebar()">
+    <div class="sidebar-header">
       <ion-icon name="menu-outline" class="cloud"></ion-icon>
       <span class="title">Arqos</span>
     </div>
     <ul class="menu">
-      <li><ion-icon name="home-outline"></ion-icon><span class="text"><a href="menu.html">Menu</a></span></li>
-      <li><ion-icon name="time-outline"></ion-icon><span class="text"><a href="VerVisitas.html">Visitas</a></span></li>
-      <li><ion-icon name="archive-outline"></ion-icon><span class="text"><a href="Historial.html">Historial</a></span></li>
-      <li><ion-icon name="person-circle-outline"></ion-icon><span class="text"><a href="perfil.html">Perfil</a></span></li>
+      <li><a href="menu.html"><ion-icon name="home-outline"></ion-icon><span class="text">Menu</span></a></li>
+      <li><a href="VerVisitas.html"><ion-icon name="time-outline"></ion-icon><span class="text">Visitas</span></a></li>
+      <li><a href="Historial.html"><ion-icon name="archive-outline"></ion-icon><span class="text">Historial</span></a></li>
+      <li><a href="perfil.html"><ion-icon name="person-circle-outline"></ion-icon><span class="text">Perfil</span></a></li>
     </ul>
   `;
-// <li><ion-icon name="notifications-outline"></ion-icon><span class="text"><a href="Notificaciones.html">Notificaciones</a></span></li>
+
   // Botones según rol
-if (auth.user?.rol === "Vendedor") {
-  sidebarHTML += `
-    <button class="create-btn">
-      <a href="Publicar.html" style="text-decoration:none;color:white;">+ Publicar Casa</a>
-    </button>
-  `;
-} else if (auth.user?.rol === "Usuario") {
-  sidebarHTML += `
-    <ul class="menu">
-      <li><ion-icon name="star-outline"></ion-icon><span class="text"><a href="Favoritos.html">Favoritos</a></span></li>
-    </ul>
-  `;
-}
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  sidebar.classList.toggle("closed"); // para colapsar en desktop
-}
-
-// Para móviles (botón hamburguesa)
-document.addEventListener("DOMContentLoaded", () => {
-  const toggleButton = document.getElementById("toggleButton");
-  const sidebar = document.getElementById("sidebar");
-
-  if (toggleButton) {
-    toggleButton.addEventListener("click", () => {
-      sidebar.classList.toggle("open"); // abre/cierra en móvil
-    });
+  if (auth.user?.rol === "Vendedor") {
+    sidebarHTML += `
+      <button class="create-btn">
+        <a href="Publicar.html">+ Publicar Casa</a>
+      </button>
+    `;
+  } else if (auth.user?.rol === "Usuario") {
+    sidebarHTML += `
+      <ul class="menu">
+        <li><a href="Favoritos.html"><ion-icon name="star-outline"></ion-icon><span class="text">Favoritos</span></a></li>
+      </ul>
+    `;
   }
-});
-
-// Hacer global toggleSidebar() (porque lo llamas desde HTML inline)
-window.toggleSidebar = toggleSidebar;
 
   // Insertamos todo en el sidebar
   sidebar.innerHTML = sidebarHTML;
+
+  // Inicializar el SidebarManager después de cargar el contenido
+  setTimeout(() => {
+    if (!window.sidebarManager) {
+      window.sidebarManager = new SidebarManager();
+      window.toggleSidebar = SidebarManager.toggleSidebar;
+    }
+  }, 100);
+
   } else {
-    sidebar.innerHTML = "";
+    if (sidebar) sidebar.innerHTML = "";
     window.location.replace("index.html");
   }
 }
@@ -143,10 +222,22 @@ export const role = {
     getUserRole() === "Usuario" || hasAuthority("ROLE_Usuario"),
 };
 
+// -------------------- EVENT LISTENERS --------------------
 window.addEventListener("pageshow", async () => {
   await renderUser();
 });
 
+// Inicialización cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  // El SidebarManager se inicializará después de ensureMenuLinks
+});
+
+// También inicializar cuando se cargue dinámicamente
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    // El SidebarManager se inicializará después de ensureMenuLinks
+  });
+}
 
 // -------------------- REDIRECCIÓN SI YA ESTÁ AUTENTICADO --------------------
 export async function estaadentro() {
