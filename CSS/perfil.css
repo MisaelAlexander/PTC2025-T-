@@ -520,3 +520,314 @@ select:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
+
+/* Estilos específicos para el formulario de edición */
+.section-title {
+  color: var(--primary-dark);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 1.5rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-light);
+  animation: slideUp 0.6s ease-out;
+}
+
+.section-title:first-child {
+  margin-top: 0;
+}
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem;
+  background: var(--gray-100);
+  border-radius: var(--radius);
+  transition: all 0.3s ease;
+  animation: slideUp 0.6s ease-out;
+}
+
+.profile-row:hover {
+  background: var(--gray-200);
+  transform: translateX(5px);
+}
+
+.profile-row h4 {
+  min-width: 120px;
+  color: var(--primary-dark);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0;
+  margin-right: 1rem;
+}
+
+.profile-row p {
+  color: var(--text);
+  margin: 0;
+  font-size: 1rem;
+  flex: 1;
+}
+
+.profile-row input,
+.profile-row select {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--gray-300);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--card-bg);
+  transition: all 0.3s ease;
+  color: var(--text);
+}
+
+.profile-row input:focus,
+.profile-row select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+  background: var(--card-bg);
+}
+
+.profile-row input:read-only {
+  background: var(--gray-100);
+  color: var(--text-light);
+  cursor: not-allowed;
+}
+
+.profile-row input:read-only:focus {
+  border-color: var(--gray-300);
+  box-shadow: none;
+}
+
+/* Estilos para la sección de imagen de perfil */
+.profile-row img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary);
+  margin-right: 1rem;
+  transition: all 0.3s ease;
+}
+
+.profile-row img:hover {
+  transform: scale(1.05);
+  border-color: var(--secondary);
+}
+
+#fotoInput {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px dashed var(--gray-300);
+  border-radius: 8px;
+  background: var(--bg);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+#fotoInput:hover {
+  border-color: var(--primary);
+  background: var(--card-bg);
+}
+
+#fotoInput:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+/* Preview de imagen */
+#previewFoto {
+  border: 3px solid var(--accent);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+/* Estados de validación */
+.profile-row input:invalid {
+  border-color: var(--danger);
+}
+
+.profile-row input:valid {
+  border-color: var(--accent);
+}
+
+/* Placeholder styling */
+.profile-row input::placeholder {
+  color: var(--gray-400);
+  font-style: italic;
+}
+
+/* Estilos para selects */
+.profile-row select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231E293B'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+.profile-row select:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231E3A8A'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Campos deshabilitados */
+.profile-row input:disabled {
+  background: var(--gray-200);
+  color: var(--gray-500);
+  cursor: not-allowed;
+}
+
+/* Animaciones para campos del formulario */
+.profile-row {
+  animation: slideInRow 0.5s ease-out both;
+}
+
+.profile-row:nth-child(1) { animation-delay: 0.1s; }
+.profile-row:nth-child(2) { animation-delay: 0.15s; }
+.profile-row:nth-child(3) { animation-delay: 0.2s; }
+.profile-row:nth-child(4) { animation-delay: 0.25s; }
+.profile-row:nth-child(5) { animation-delay: 0.3s; }
+.profile-row:nth-child(6) { animation-delay: 0.35s; }
+.profile-row:nth-child(7) { animation-delay: 0.4s; }
+.profile-row:nth-child(8) { animation-delay: 0.45s; }
+.profile-row:nth-child(9) { animation-delay: 0.5s; }
+.profile-row:nth-child(10) { animation-delay: 0.55s; }
+
+@keyframes slideInRow {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive para formulario */
+@media (max-width: 768px) {
+  .profile-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .profile-row h4 {
+    min-width: auto;
+    margin-right: 0;
+  }
+  
+  .profile-row input,
+  .profile-row select {
+    width: 100%;
+  }
+  
+  .profile-row img {
+    align-self: center;
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.1rem;
+  }
+  
+  .profile-row {
+    padding: 0.5rem;
+  }
+  
+  .profile-row h4 {
+    font-size: 0.9rem;
+  }
+  
+  .profile-row input,
+  .profile-row select {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Estados de carga para formulario */
+.profile-row.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.profile-row.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: loadingShine 1.5s infinite;
+}
+
+@keyframes loadingShine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Indicadores de campo requerido */
+.profile-row h4::after {
+  content: '*';
+  color: var(--danger);
+  margin-left: 0.25rem;
+  font-weight: bold;
+}
+
+.profile-row:has(input:optional) h4::after {
+  content: '';
+}
+
+/* Tooltips para campos */
+.profile-row {
+  position: relative;
+}
+
+.profile-row:hover::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-dark);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  animation: tooltipFade 0.3s ease-out 0.5s forwards;
+}
+
+@keyframes tooltipFade {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .profile-row,
+  .section-title {
+    animation: none;
+  }
+}
+
+/* Focus visible mejorado */
+.profile-row input:focus-visible,
+.profile-row select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
