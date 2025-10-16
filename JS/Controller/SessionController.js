@@ -298,6 +298,6 @@ export async function estaadentro() {
       window.location.replace("menu.html");
     }
   } catch {
-      window.location.replace("index.html");
+    // Si no hay cookie válida, no pasa nada y se queda en index(login)
   }
 }
