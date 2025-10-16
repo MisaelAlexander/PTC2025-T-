@@ -204,4 +204,4 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarError(error.message || "Error al registrar el usuario.");
         }
     });
-});a
+});
