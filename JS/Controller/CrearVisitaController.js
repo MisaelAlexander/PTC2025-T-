@@ -1,17 +1,19 @@
 import { 
   obtenerTiposVisita, 
   obtenerVisitasPorInmueble, 
+  obtenerVisitasAceptadasPorInmueble,
   registrarVisita,
   obtenerInmueblePorId,
   obtenerFotosPorInmuebleId
 } from "../Service/CrearVisitaService.js";
 import { guardarHistorial } from "../Service/HistorialService.js";
-import { requireAuth, role, auth } from "./SessionController.js"; // Seguridad
+import { requireAuth, role, auth } from "./SessionController.js";
 
 let currentDate = new Date();
 let selectedDate = null;
 let selectedTime = null;
 let occupiedTimes = {}; // { "YYYY-MM-DD": ["HH:mm:ss", ...] }
+let acceptedVisitsTimes = {}; // Nuevo: para visitas aceptadas futuras
 let tiposVisita = [];
 let inmuebleData = null;
 
@@ -29,7 +31,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const oki = await requireAuth();
   if (!oki) return;
 
-  // Restringir acceso a solo Usuario o Vendedor
   if (!(role.isUsuario())) {
     window.location.replace("index.html");
     return;
@@ -42,13 +43,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     inmuebleData = await obtenerInmueblePorId(idInmueble);
 
-    // ===== Título y ubicación =====
     const propertyTitle = document.querySelector(".property-details h2");
     const propertyLocation = document.querySelector(".property-details p");
     if (propertyTitle) propertyTitle.textContent = inmuebleData.titulo || "Título no disponible";
     if (propertyLocation) propertyLocation.textContent = inmuebleData.ubicacion || "Ubicación no disponible";
 
-    // ===== Cargar primera foto en .property-image img =====
     const fotos = await obtenerFotosPorInmuebleId(idInmueble);
     if (fotos.length > 0) {
       const firstPhotoUrl = fotos[0].foto;
@@ -61,6 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await cargarTiposVisita();
     await cargarDisponibilidad(idInmueble);
+    await cargarVisitasAceptadas(idInmueble); // Nueva función
     generarCalendario();
     actualizarTimeSlots();
   } catch (error) {
@@ -133,35 +133,344 @@ function mostrarNotificacion(mensaje, tipo = "exito") {
   }, 2000);
 }
 
-function mostrarModal(mensaje) {
-  return new Promise((resolve) => {
-    const modal = document.getElementById("modalConfirm");
-    const modalMensaje = document.getElementById("modalMensaje");
-    const btnSi = document.getElementById("modalSi");
-    const btnNo = document.getElementById("modalNo");
+// ==========================
+// Cargar visitas aceptadas futuras
+// ==========================
+async function cargarVisitasAceptadas(idInmueble) {
+  try {
+    const visitasAceptadas = await obtenerVisitasAceptadasPorInmueble(idInmueble);
+    acceptedVisitsTimes = {};
 
-    modalMensaje.textContent = mensaje;
-    modal.style.display = "flex";
+    visitasAceptadas.forEach(v => {
+      const fechaObj = buildLocalDate(v.fecha, v.hora);
+      const fecha = formatDate(fechaObj);
 
-    const limpiar = () => {
-      btnSi.removeEventListener("click", onSi);
-      btnNo.removeEventListener("click", onNo);
-      modal.style.display = "none";
-    };
+      const [h, m, s] = v.hora.split(":");
+      const hora = `${h.padStart(2,'0')}:${m.padStart(2,'0')}:${(s||'00').padStart(2,'0')}`;
 
-    const onSi = () => {
-      limpiar();
-      resolve(true);
-    };
+      if (!acceptedVisitsTimes[fecha]) acceptedVisitsTimes[fecha] = new Set();
+      acceptedVisitsTimes[fecha].add(hora);
+    });
 
-    const onNo = () => {
-      limpiar();
-      resolve(false);
-    };
+    // Convertir sets a arrays
+    for (let fecha in acceptedVisitsTimes) {
+      acceptedVisitsTimes[fecha] = Array.from(acceptedVisitsTimes[fecha]);
+    }
 
-    btnSi.addEventListener("click", onSi);
-    btnNo.addEventListener("click", onNo);
+  } catch (error) {
+    console.error("Error cargando visitas aceptadas:", error);
+  }
+}
+
+// ==========================
+// Cargar disponibilidad (modificada)
+// ==========================
+async function cargarDisponibilidad(idInmueble) {
+  try {
+    let visitas = await obtenerVisitasPorInmueble(idInmueble);
+
+    if (!Array.isArray(visitas)) {
+      if (visitas && Array.isArray(visitas.data)) {
+        visitas = visitas.data;
+      } else {
+        visitas = [];
+      }
+    }
+
+    occupiedTimes = {};
+
+    visitas.forEach(v => {
+      const fechaObj = buildLocalDate(v.fecha, v.hora);
+      const fecha = formatDate(fechaObj);
+
+      const [h, m, s] = v.hora.split(":");
+      const hora = `${h.padStart(2,'0')}:${m.padStart(2,'0')}:${(s||'00').padStart(2,'0')}`;
+
+      if (!occupiedTimes[fecha]) occupiedTimes[fecha] = new Set();
+      occupiedTimes[fecha].add(hora);
+    });
+
+    for (let fecha in occupiedTimes) {
+      occupiedTimes[fecha] = Array.from(occupiedTimes[fecha]);
+    }
+
+  } catch (error) {
+    console.error("Error cargando disponibilidad:", error);
+    mostrarNotificacion("Error al cargar disponibilidad", "error");
+  }
+}
+
+// ==========================
+// Verificar slot disponible (MODIFICADA)
+// ==========================
+function isSlotAvailable(date, time) {
+  const dateStr = formatDate(date);
+  const isOccupied = (occupiedTimes[dateStr] || []).includes(time);
+  const isAccepted = (acceptedVisitsTimes[dateStr] || []).includes(time);
+  const isPassed = isTimeSlotPassed(date, time);
+  
+  return !isOccupied && !isAccepted && !isPassed;
+}
+
+// ==========================
+// Generar calendario (MODIFICADA)
+// ==========================
+function generarCalendario() {
+  const monthYear = document.getElementById("monthYear");
+  const calendarGrid = document.querySelector(".calendar-grid");
+  if (!monthYear || !calendarGrid) return;
+
+  monthYear.textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+  calendarGrid.innerHTML = "";
+
+  const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+  const startDay = firstDay.getDay();
+  const daysInMonth = lastDay.getDate();
+
+  for (let i = 0; i < startDay; i++) {
+    const empty = document.createElement("div");
+    empty.className = "calendar-day disabled";
+    calendarGrid.appendChild(empty);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayBtn = document.createElement("button");
+    dayBtn.type = "button";
+    dayBtn.className = "calendar-day";
+    dayBtn.textContent = day;
+
+    const dateObj = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    dateObj.setHours(0,0,0,0);
+    const today = new Date(); 
+    today.setHours(0,0,0,0);
+
+    if (dateObj.getTime() === today.getTime()) dayBtn.classList.add("today");
+
+    if (dateObj < today) {
+      dayBtn.classList.add("disabled");
+      dayBtn.disabled = true;
+      dayBtn.title = "Fecha pasada";
+    } else {
+      const dateStr = formatDate(dateObj);
+      const horasOcupadas = (occupiedTimes[dateStr] || []).map(h => h.length === 5 ? h + ":00" : h);
+      const horasAceptadas = (acceptedVisitsTimes[dateStr] || []).map(h => h.length === 5 ? h + ":00" : h);
+      
+      // Combinar horas ocupadas y aceptadas
+      const todasHorasOcupadas = [...new Set([...horasOcupadas, ...horasAceptadas])];
+      
+      // Verificar slots disponibles excluyendo horas ocupadas, aceptadas y pasadas
+      const availableSlots = defaultTimeSlots.filter(time => {
+        return !todasHorasOcupadas.includes(time) && !isTimeSlotPassed(dateObj, time);
+      });
+
+      if (availableSlots.length === 0) {
+        dayBtn.classList.add("occupied");
+        dayBtn.disabled = true;
+        dayBtn.title = "No hay horarios disponibles";
+      } else if (todasHorasOcupadas.length > 0) {
+        dayBtn.classList.add("partial-occupied");
+        const ocupadasCount = horasOcupadas.length;
+        const aceptadasCount = horasAceptadas.length;
+        dayBtn.title = `${ocupadasCount} hora(s) ocupada(s), ${aceptadasCount} aceptada(s), ${availableSlots.length} disponible(s)`;
+        dayBtn.addEventListener("click", () => selectDate(dateObj, dayBtn));
+      }
+      else {
+        dayBtn.title = `${availableSlots.length} horarios disponibles`;
+        dayBtn.addEventListener("click", () => selectDate(dateObj, dayBtn));
+      }
+    }
+
+    calendarGrid.appendChild(dayBtn);
+  }
+}
+
+// ==========================
+// Actualizar slots (MODIFICADA)
+// ==========================
+function actualizarTimeSlots() {
+  const timeSlotsContainer = document.getElementById("timeSlots");
+  const noDateMessage = document.getElementById("noDateMessage");
+  const availableCount = document.getElementById("availableCount");
+
+  if (!selectedDate) {
+    timeSlotsContainer.style.display = "none";
+    noDateMessage.style.display = "block";
+    availableCount.textContent = "";
+    return;
+  }
+
+  noDateMessage.style.display = "none";
+  timeSlotsContainer.style.display = "grid";
+  timeSlotsContainer.innerHTML = "";
+
+  const dateStr = formatDate(selectedDate);
+  const horasOcupadas = (occupiedTimes[dateStr] || []).map(h => h.length === 5 ? h + ":00" : h);
+  const horasAceptadas = (acceptedVisitsTimes[dateStr] || []).map(h => h.length === 5 ? h + ":00" : h);
+  
+  // Filtrar slots disponibles excluyendo horas ocupadas, aceptadas y pasadas
+  const availableSlots = defaultTimeSlots.filter(time => {
+    return !horasOcupadas.includes(time) && !horasAceptadas.includes(time) && !isTimeSlotPassed(selectedDate, time);
   });
+
+  availableCount.textContent = `(${availableSlots.length} disponibles)`;
+
+  defaultTimeSlots.forEach(time => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "time-slot";
+    btn.textContent = formatTime(time);
+    btn.dataset.time = time;
+
+    // Verificar si está ocupado
+    const isOccupied = horasOcupadas.includes(time);
+    // Verificar si está aceptado
+    const isAccepted = horasAceptadas.includes(time);
+    // Verificar si ya pasó
+    const isPassed = isTimeSlotPassed(selectedDate, time);
+
+    if (isOccupied) {
+      btn.disabled = true;
+      btn.classList.add("occupied");
+      btn.title = "Horario ocupado";
+    } else if (isAccepted) {
+      btn.disabled = true;
+      btn.classList.add("accepted");
+      btn.title = "Visita aceptada - No disponible";
+    } else if (isPassed) {
+      btn.disabled = true;
+      btn.classList.add("passed");
+      btn.title = "Horario ya pasó";
+    } else {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".time-slot.selected").forEach(s => s.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedTime = time;
+        updateSummary();
+        validateForm();
+      });
+    }
+
+    timeSlotsContainer.appendChild(btn);
+  });
+}
+
+// ==========================
+// Seleccionar fecha
+// ==========================
+function selectDate(date, element) {
+  document.querySelectorAll(".calendar-day.selected").forEach(d => d.classList.remove("selected"));
+  element.classList.add("selected");
+  selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  selectedTime = null;
+  actualizarTimeSlots();
+  updateSummary();
+  validateForm();
+}
+
+// ==========================
+// Resumen y validaciones
+// ==========================
+function updateSummary() {
+  const summary = document.getElementById("appointmentSummary");
+  const summaryDate = document.getElementById("summaryDate");
+  const summaryTime = document.getElementById("summaryTime");
+  const summaryType = document.getElementById("summaryType");
+
+  if (selectedDate && selectedTime) {
+    const dateOptions = { weekday:"long", year:"numeric", month:"long", day:"numeric" };
+    summaryDate.textContent = selectedDate.toLocaleDateString("es-ES", dateOptions);
+    summaryTime.textContent = formatTime(selectedTime);
+
+    const typeRadio = document.querySelector('input[name="visitType"]:checked');
+    const tipo = tiposVisita.find(t => t.idtipoVisita == typeRadio?.value);
+    summaryType.textContent = tipo?.tipoVisita || "Visita Individual";
+
+    summary.style.display = "block";
+  } else summary.style.display = "none";
+}
+
+function validateForm() {
+  const confirmBtn = document.getElementById("confirmBtn");
+  confirmBtn.disabled = !(selectedDate && selectedTime);
+}
+
+// ==========================
+// Enviar formulario (MODIFICADA)
+// ==========================
+async function handleSubmit(e) {
+  e.preventDefault();
+
+  if (!selectedDate || !selectedTime) {
+    mostrarNotificacion("Debes seleccionar fecha y hora.", "error");
+    return;
+  }
+
+  if (!isSlotAvailable(selectedDate, selectedTime)) {
+    mostrarNotificacion("La fecha y hora seleccionadas ya están ocupadas o tienen una visita aceptada.", "error");
+    return;
+  }
+   
+  const usuario = auth.user;
+
+  const typeRadio = document.querySelector('input[name="visitType"]:checked');
+  if (!typeRadio) {
+    mostrarNotificacion("Debes seleccionar un tipo de visita.", "error");
+    return;
+  }
+
+  const fechaParaEnviar = new Date(selectedDate);
+  fechaParaEnviar.setDate(fechaParaEnviar.getDate());
+
+  const visita = {
+    fecha: formatDate(fechaParaEnviar),
+    hora: selectedTime,
+    descripcion: document.getElementById("notes").value || "",
+    idestado: 3,
+    idinmueble: inmuebleData.idinmuebles,
+    idvendedor: inmuebleData.idusuario,
+    idcliente: usuario.id,
+    idtipovisita: parseInt(typeRadio.value)
+  };
+
+  const confirmBtn = document.getElementById("confirmBtn");
+  const btnText = document.getElementById("btnText");
+  const btnSpinner = document.getElementById("btnSpinner");
+
+  btnText.textContent = "Confirmando...";
+  btnSpinner.style.display = "inline-block";
+  confirmBtn.disabled = true;
+
+  try {
+    const result = await registrarVisita(visita);
+    if (result && result.idvisita) {
+      await guardarAgendamientoHistorial(usuario, selectedDate, selectedTime);
+      mostrarNotificacion(`Has agendado una visita para ${inmuebleData.titulo}`, "exito");
+
+      await cargarDisponibilidad(inmuebleData.idinmuebles);
+      await cargarVisitasAceptadas(inmuebleData.idinmuebles);
+      generarCalendario();
+
+      if (selectedDate) {
+        const day = selectedDate.getDate();
+        const btn = [...document.querySelectorAll(".calendar-day")]
+          .find(b => b.textContent == day && !b.classList.contains("disabled"));
+        if (btn) selectDate(selectedDate, btn);
+      } else {
+        actualizarTimeSlots();
+      }
+    } else {
+      mostrarNotificacion("No se pudo registrar la cita. Inténtalo nuevamente.", "error");
+    }
+  } catch (error) {
+    console.error("Error al registrar la cita:", error);
+    mostrarNotificacion("Error al registrar la cita. Revisa la consola para más detalles.", "error");
+  } finally {
+    btnText.textContent = "Confirmar Cita";
+    btnSpinner.style.display = "none";
+    confirmBtn.disabled = false;
+    validateForm();
+  }
 }
 
 // ==========================
@@ -218,307 +527,5 @@ async function cargarTiposVisita() {
   } catch (error) {
     console.error("Error cargando tipos de visita:", error);
     mostrarNotificacion("Error al cargar tipos de visita", "error");
-  }
-}
-
-// ==========================
-// Cargar disponibilidad
-// ==========================
-async function cargarDisponibilidad(idInmueble) {
-  try {
-    let visitas = await obtenerVisitasPorInmueble(idInmueble);
-
-    // Asegurarnos de que sea un array
-    if (!Array.isArray(visitas)) {
-      if (visitas && Array.isArray(visitas.data)) {
-        visitas = visitas.data; // si tu API devuelve {data: [...]}
-      } else {
-        visitas = []; // ningún registro
-      }
-    }
-
-    occupiedTimes = {};
-
-    visitas.forEach(v => {
-      const fechaObj = buildLocalDate(v.fecha, v.hora);
-      const fecha = formatDate(fechaObj);
-
-      const [h, m, s] = v.hora.split(":");
-      const hora = `${h.padStart(2,'0')}:${m.padStart(2,'0')}:${(s||'00').padStart(2,'0')}`;
-
-      if (!occupiedTimes[fecha]) occupiedTimes[fecha] = new Set();
-      occupiedTimes[fecha].add(hora);
-    });
-
-    // Convertir sets a arrays
-    for (let fecha in occupiedTimes) {
-      occupiedTimes[fecha] = Array.from(occupiedTimes[fecha]);
-    }
-
-  } catch (error) {
-    console.error("Error cargando disponibilidad:", error);
-    mostrarNotificacion("Error al cargar disponibilidad", "error");
-  }
-}
-
-// ==========================
-// Verificar slot disponible
-// ==========================
-function isSlotAvailable(date, time) {
-  const dateStr = formatDate(date);
-  const isOccupied = (occupiedTimes[dateStr] || []).includes(time);
-  const isPassed = isTimeSlotPassed(date, time);
-  
-  return !isOccupied && !isPassed;
-}
-
-// ==========================
-// Generar calendario
-// ==========================
-function generarCalendario() {
-  const monthYear = document.getElementById("monthYear");
-  const calendarGrid = document.querySelector(".calendar-grid");
-  if (!monthYear || !calendarGrid) return;
-
-  monthYear.textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-  calendarGrid.innerHTML = "";
-
-  const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-  const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-  const startDay = firstDay.getDay();
-  const daysInMonth = lastDay.getDate();
-
-  for (let i = 0; i < startDay; i++) {
-    const empty = document.createElement("div");
-    empty.className = "calendar-day disabled";
-    calendarGrid.appendChild(empty);
-  }
-
-  for (let day = 1; day <= daysInMonth; day++) {
-    const dayBtn = document.createElement("button");
-    dayBtn.type = "button";
-    dayBtn.className = "calendar-day";
-    dayBtn.textContent = day;
-
-    const dateObj = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    dateObj.setHours(0,0,0,0);
-    const today = new Date(); 
-    today.setHours(0,0,0,0);
-
-    if (dateObj.getTime() === today.getTime()) dayBtn.classList.add("today");
-
-    if (dateObj < today) {
-      dayBtn.classList.add("disabled");
-      dayBtn.disabled = true;
-      dayBtn.title = "Fecha pasada";
-    } else {
-      const dateStr = formatDate(dateObj);
-      const horasOcupadas = (occupiedTimes[dateStr] || []).map(h => h.length === 5 ? h + ":00" : h);
-      
-      // Verificar slots disponibles excluyendo horas pasadas
-      const availableSlots = defaultTimeSlots.filter(time => {
-        return !horasOcupadas.includes(time) && !isTimeSlotPassed(dateObj, time);
-      });
-
-      if (availableSlots.length === 0) {
-        dayBtn.classList.add("occupied");
-        dayBtn.disabled = true;
-        dayBtn.title = "No hay horarios disponibles";
-      } else if (horasOcupadas.length > 0) {
-        dayBtn.classList.add("partial-occupied");
-        dayBtn.title = `${horasOcupadas.length} hora(s) ocupada(s), ${availableSlots.length} disponible(s)`;
-        dayBtn.addEventListener("click", () => selectDate(dateObj, dayBtn));
-      }
-      else {
-        dayBtn.title = `${availableSlots.length} horarios disponibles`;
-        dayBtn.addEventListener("click", () => selectDate(dateObj, dayBtn));
-      }
-    }
-
-    calendarGrid.appendChild(dayBtn);
-  }
-}
-
-// ==========================
-// Seleccionar fecha
-// ==========================
-function selectDate(date, element) {
-  document.querySelectorAll(".calendar-day.selected").forEach(d => d.classList.remove("selected"));
-  element.classList.add("selected");
-  selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  selectedTime = null;
-  actualizarTimeSlots();
-  updateSummary();
-  validateForm();
-}
-
-// ==========================
-// Actualizar slots
-// ==========================
-function actualizarTimeSlots() {
-  const timeSlotsContainer = document.getElementById("timeSlots");
-  const noDateMessage = document.getElementById("noDateMessage");
-  const availableCount = document.getElementById("availableCount");
-
-  if (!selectedDate) {
-    timeSlotsContainer.style.display = "none";
-    noDateMessage.style.display = "block";
-    availableCount.textContent = "";
-    return;
-  }
-
-  noDateMessage.style.display = "none";
-  timeSlotsContainer.style.display = "grid";
-  timeSlotsContainer.innerHTML = "";
-
-  const dateStr = formatDate(selectedDate);
-  const horasOcupadas = (occupiedTimes[dateStr] || []).map(h => h.length === 5 ? h + ":00" : h);
-  
-  // Filtrar slots disponibles excluyendo horas ocupadas y horas pasadas
-  const availableSlots = defaultTimeSlots.filter(time => {
-    return !horasOcupadas.includes(time) && !isTimeSlotPassed(selectedDate, time);
-  });
-
-  const passedSlots = defaultTimeSlots.filter(time => {
-    return isTimeSlotPassed(selectedDate, time);
-  });
-
-  availableCount.textContent = `(${availableSlots.length} disponibles)`;
-
-  defaultTimeSlots.forEach(time => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "time-slot";
-    btn.textContent = formatTime(time);
-    btn.dataset.time = time;
-
-    // Verificar si está ocupado
-    const isOccupied = horasOcupadas.includes(time);
-    // Verificar si ya pasó
-    const isPassed = isTimeSlotPassed(selectedDate, time);
-
-    if (isOccupied) {
-      btn.disabled = true;
-      btn.classList.add("occupied");
-      btn.title = "Horario ocupado";
-    } else if (isPassed) {
-      btn.disabled = true;
-      btn.classList.add("passed");
-      btn.title = "Horario ya pasó";
-    } else {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".time-slot.selected").forEach(s => s.classList.remove("selected"));
-        btn.classList.add("selected");
-        selectedTime = time;
-        updateSummary();
-        validateForm();
-      });
-    }
-
-    timeSlotsContainer.appendChild(btn);
-  });
-}
-
-// ==========================
-// Resumen y validaciones
-// ==========================
-function updateSummary() {
-  const summary = document.getElementById("appointmentSummary");
-  const summaryDate = document.getElementById("summaryDate");
-  const summaryTime = document.getElementById("summaryTime");
-  const summaryType = document.getElementById("summaryType");
-
-  if (selectedDate && selectedTime) {
-    const dateOptions = { weekday:"long", year:"numeric", month:"long", day:"numeric" };
-    summaryDate.textContent = selectedDate.toLocaleDateString("es-ES", dateOptions);
-    summaryTime.textContent = formatTime(selectedTime);
-
-    const typeRadio = document.querySelector('input[name="visitType"]:checked');
-    const tipo = tiposVisita.find(t => t.idtipoVisita == typeRadio?.value);
-    summaryType.textContent = tipo?.tipoVisita || "Visita Individual";
-
-    summary.style.display = "block";
-  } else summary.style.display = "none";
-}
-
-function validateForm() {
-  const confirmBtn = document.getElementById("confirmBtn");
-  confirmBtn.disabled = !(selectedDate && selectedTime);
-}
-
-// ==========================
-// Enviar formulario
-// ==========================
-async function handleSubmit(e) {
-  e.preventDefault();
-
-  if (!selectedDate || !selectedTime) {
-    mostrarNotificacion("Debes seleccionar fecha y hora.", "error");
-    return;
-  }
-
-  if (!isSlotAvailable(selectedDate, selectedTime)) {
-    mostrarNotificacion("La fecha y hora seleccionadas ya están ocupadas.", "error");
-    return;
-  }
-   
-  const usuario = auth.user;
-
-  const typeRadio = document.querySelector('input[name="visitType"]:checked');
-  if (!typeRadio) {
-    mostrarNotificacion("Debes seleccionar un tipo de visita.", "error");
-    return;
-  }
-
-  const fechaParaEnviar = new Date(selectedDate);
-  fechaParaEnviar.setDate(fechaParaEnviar.getDate());
-
-  const visita = {
-    fecha: formatDate(fechaParaEnviar),
-    hora: selectedTime,
-    descripcion: document.getElementById("notes").value || "",
-    idestado: 3,
-    idinmueble: inmuebleData.idinmuebles,
-    idvendedor: inmuebleData.idusuario,
-    idcliente: usuario.id,
-    idtipovisita: parseInt(typeRadio.value)
-  };
-
-  const confirmBtn = document.getElementById("confirmBtn");
-  const btnText = document.getElementById("btnText");
-  const btnSpinner = document.getElementById("btnSpinner");
-
-  btnText.textContent = "Confirmando...";
-  btnSpinner.style.display = "inline-block";
-  confirmBtn.disabled = true;
-
-  try {
-    const result = await registrarVisita(visita);
-    if (result && result.idvisita) {
-      await guardarAgendamientoHistorial(usuario, selectedDate, selectedTime);
-      mostrarNotificacion(`Has agendado una visita para ${inmuebleData.titulo}`, "exito");
-
-      await cargarDisponibilidad(inmuebleData.idinmuebles);
-      generarCalendario();
-
-      if (selectedDate) {
-        const day = selectedDate.getDate();
-        const btn = [...document.querySelectorAll(".calendar-day")]
-          .find(b => b.textContent == day && !b.classList.contains("disabled"));
-        if (btn) selectDate(selectedDate, btn);
-      } else {
-        actualizarTimeSlots();
-      }
-    } else {
-      mostrarNotificacion("No se pudo registrar la cita. Inténtalo nuevamente.", "error");
-    }
-  } catch (error) {
-    console.error("Error al registrar la cita:", error);
-    mostrarNotificacion("Error al registrar la cita. Revisa la consola para más detalles.", "error");
-  } finally {
-    btnText.textContent = "Confirmar Cita";
-    btnSpinner.style.display = "none";
-    confirmBtn.disabled = false;
-    validateForm();
   }
 }
