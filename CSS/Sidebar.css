@@ -1,190 +1,232 @@
-/* --------------------
-   Sidebar moderno global
--------------------- */
+/* SIDEBAR.CSS - Diseño según imagen */
+:root {
+    --primary: #1E3A8A;
+    --primary-light: #3B56B8;
+    --primary-dark: #152A6E;
+    --secondary: #F7AD19;
+    --white: #FFFFFF;
+    --gray-200: #E2E8F0;
+    --gray-600: #475569;
+    --gray-800: #1E293B;
+}
+
 .sidebar {
-  width: 260px;
-  background: linear-gradient(180deg, #ffffff, #f9f9fb);
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  padding: 20px 15px;
-  display: flex;
-  flex-direction: column;
-  transition: width 0.3s ease, left 0.3s ease;
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-  z-index: 1000;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Sidebar colapsado en desktop */
-.sidebar.closed {
-  width: 70px;
-  padding: 15px 10px;
-}
-
-/* Encabezado */
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #222;
-  margin-bottom: 25px;
-  cursor: pointer;
-  white-space: nowrap;
-  padding: 10px;
-  border-radius: 12px;
-  transition: background 0.3s;
-}
-
-.sidebar-header:hover {
-  background: rgba(0,0,0,0.05);
-}
-
-.sidebar-header .cloud {
-  font-size: 26px;
-  color: #4a90e2;
-  transition: color 0.3s;
-}
-
-.sidebar.closed .title {
-  display: none;
-}
-
-/* Items del menú */
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar ul li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 15px;
-  margin: 6px 0;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #333;
-  transition: background 0.3s, color 0.3s;
-}
-
-.sidebar ul li ion-icon {
-  font-size: 22px;
-  min-width: 24px;
-  color: #4a90e2;
-  transition: color 0.3s;
-}
-
-.sidebar ul li:hover {
-  background: #4a90e2;
-  color: #fff;
-}
-
-.sidebar ul li:hover ion-icon {
-  color: #fff;
-}
-
-.sidebar ul li .text a {
-  color: inherit;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-/* Sidebar colapsado */
-.sidebar.closed ul li {
-  justify-content: center;
-  gap: 0;
-}
-
-.sidebar.closed ul li .text {
-  display: none;
-}
-
-/* --------------------
-   Botón toggle móvil
--------------------- */
-#toggleButton {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  background: #4a90e2;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 20px;
-  cursor: pointer;
-  z-index: 2000;
-  display: none;
-}
-
-/* --------------------
-   Responsive tablet/móvil
--------------------- */
-@media screen and (max-width: 1024px) {
-  .sidebar {
     position: fixed;
-    left: -260px;
     top: 0;
-    height: 100%;
-    border-radius: 0;
-    padding-top: 20px;
-    transition: left 0.3s ease;
-  }
-
-  .sidebar.open {
     left: 0;
-  }
-
-  #toggleButton {
-    display: block;
-  }
-
-  .sidebar-header {
-    display: none;
-  }
+    height: 100vh;
+    width: 260px;
+    background: var(--white);
+    color: var(--gray-800);
+    padding: 0;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--gray-200);
 }
 
-.create-btn {
-  background: linear-gradient(135deg, #4a90e2, #357ABD);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 12px 18px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  width: 100%;
-  text-align: center;
-  margin-top: 20px;
-
-  /* Estilo moderno */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  transition: all 0.3s ease;
-  font-family: 'Poppins', sans-serif;
+.sidebar.active {
+    transform: translateX(0);
 }
 
-/* Hover */
-.create-btn:hover {
-  background: linear-gradient(135deg, #5aa4ff, #2f69b3);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+/* LOGO - Según imagen */
+.sidebar-logo {
+    padding: 2rem 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    background: var(--white);
 }
 
-/* Click */
-.create-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+.sidebar-logo h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+    text-align: left;
 }
-.pagination {
-  display: flex;
-  flex-direction: row;
-  justify-content: right;
-  margin-top: 20px;
+
+.sidebar-logo span {
+    color: var(--secondary);
+}
+
+/* MENU - Diseño según imagen */
+.sidebar-menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 1rem 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    color: var(--gray-600);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+}
+
+.menu-item:hover {
+    background: var(--primary-light);
+    color: var(--white);
+}
+
+.menu-item.active {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.menu-item.warning {
+    color: #DC2626;
+}
+
+.menu-item.warning:hover {
+    background: #FECACA;
+    color: #DC2626;
+}
+
+.menu-item ion-icon {
+    font-size: 1.3rem;
+    width: 24px;
+    text-align: center;
+}
+
+/* BOTÓN PUBLICAR - Destacado como en la imagen */
+.publish-button {
+    margin: 1rem 1.5rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+    color: var(--primary-dark);
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(247, 173, 25, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.publish-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(247, 173, 25, 0.4);
+}
+
+.publish-button:active {
+    transform: translateY(0);
+}
+
+/* TOGGLE BUTTON */
+.toggleButton {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+}
+
+.toggleButton:hover {
+    background: var(--primary-light);
+    transform: scale(1.1);
+}
+
+.toggleButton ion-icon {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.toggleButton.active ion-icon {
+    transform: rotate(90deg);
+}
+
+/* USER INFO - Si lo necesitas */
+.sidebar-user {
+    padding: 1.5rem;
+    border-top: 1px solid var(--gray-200);
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--gray-100);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+.user-info h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--gray-800);
+}
+
+.user-info span {
+    font-size: 0.8rem;
+    color: var(--gray-600);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .toggleButton {
+        top: 15px;
+        left: 15px;
+    }
+}
+
+@media (min-width: 769px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+    
+    .toggleButton {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 260px;
+    }
 }
