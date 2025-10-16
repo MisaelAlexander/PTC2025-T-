@@ -367,3 +367,32 @@ h2 {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+/* Estilos para el toggle de contraseña */
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.toggle-password:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group input {
+    padding-right: 50px; /* Espacio para el icono */
+}
