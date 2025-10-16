@@ -313,21 +313,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         await guardarAccionHistorial("Actualizó", titulo, usuario.id);
 
       } else {
-    // CREAR
-    inmuebleGuardado = await publicarInmueble(dto);
-    mostrarNotificacion("Propiedad publicada con éxito!", "exito");
-    inmuebleActualId = inmuebleGuardado.idinmuebles;
+        // CREAR
+        inmuebleGuardado = await publicarInmueble(dto);
+        mostrarNotificacion("Propiedad publicada con éxito!", "exito");
+        inmuebleActualId = inmuebleGuardado.idinmuebles;
 
-    // Guardar historial de publicación
-    await guardarAccionHistorial("Publicó", titulo, usuario.id);
-
-    // Redireccionar después de crear
-    if (inmuebleActualId) {
-        setTimeout(() => {
-            window.location.href = "menu.html";
-        }, 1500);
-    }
-}
+        //   Guardar historial de publicación
+        await guardarAccionHistorial("Publicó", titulo, usuario.id);
+      }
 
       // 1. Eliminar fotos marcadas
       for (const f of removedPhotos) {
