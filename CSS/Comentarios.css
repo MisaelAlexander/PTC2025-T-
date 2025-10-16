@@ -14,6 +14,16 @@
 
 /* Reset */
 * { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  margin:0;
+  overflow:hidden;
+}
 
 /* HEADER */
 .app-header {
@@ -70,7 +80,6 @@
   box-shadow: var(--shadow);
   transition: transform 0.2s;
   position:relative;
-  margin-left: -20%;
 }
 .comment-card:hover { transform: scale(1.015); }
 .comment-head { display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem; margin-bottom:0.4rem; }
