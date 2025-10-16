@@ -315,7 +315,7 @@ guardarBtn?.addEventListener('click', async () => {
 
 // Eliminar / desactivar cuenta
 eliminarCuentaBtn?.addEventListener('click', () => {
-      console.log("✅ Botón eliminar cuenta CLICKEADO");
+
     confirmacionDesactivar.style.display = "block";
 });
 
