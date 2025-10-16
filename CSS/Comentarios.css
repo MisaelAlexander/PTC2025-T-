@@ -69,6 +69,7 @@ body {
   height: calc(100vh - 60px - 230px); /* total viewport - header - footer */
   max-width: 100%;   /* ocupa todo el ancho en móvil */
   margin-inline:auto;
+  margin-left: -20%;
 }
 
 /* TARJETAS */
