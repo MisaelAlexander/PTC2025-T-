@@ -284,11 +284,13 @@ main {
 
 /* Confirmación desactivar cuenta */
 #confirmacionDesactivar {
-  background: var(--card-bg);
-  color: var(--text);
-  border: 1px solid var(--gray-200);
-  padding: 1.5rem;
-  text-align: center;
+    background: red !important; /* Temporal para ver si se muestra */
+    border: 3px solid yellow !important; /* Temporal */
+    z-index: 10000 !important; /* Asegurar que esté por encima */
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
 }
 
 #confirmacionDesactivar p {
