@@ -1,313 +1,369 @@
-/* ==== BASE ==== */
+:root {
+    /* Paleta principal */
+    --primary: #1E3A8A;
+    --primary-light: #3B56B8;
+    --primary-dark: #152A6E;
+    --secondary: #F7AD19;
+    --secondary-light: #F9C046;
+    --secondary-dark: #E69C17;
+    --accent: #10B981;
+    --accent-light: #34D399;
+    --accent-dark: #059669;
+    --light: #D9D9D9;
+    --light-gray: #F3F4F6;
+    --white: #FFFFFF;
+    --error: #EF4444;
+    --error-light: #FCA5A5;
+    --success: #10B981;
+    --success-light: #6EE7B7;
+    --text-dark: #1F2937;
+    --text-light: #6B7280;
+}
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: "Poppins", "Segoe UI", Tahoma, sans-serif;
-  background: linear-gradient(135deg, #1c2b36, #243b55);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--accent) 100%);
+    background-size: 400% 400%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: gradientShift 8s ease infinite;
 }
 
-/* ==== CONTENEDOR ==== */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 .container {
-  background: #ffffff;
-  padding: 40px 30px;
-  border-radius: 20px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-  width: 100%;
-  max-width: 420px;
-  position: relative;
-  animation: fadeUp 0.7s ease-out;
-  overflow: hidden;
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 450px;
+    animation: slideUp 0.8s ease-out, float 6s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
 }
 
 .container::before {
-  content: "";
-  position: absolute;
-  top: -60px;
-  left: -60px;
-  width: 160px;
-  height: 160px;
-  background: #1c2b36;
-  border-radius: 50%;
-  z-index: 0;
-  opacity: 0.15;
-}
-.container::after {
-  content: "";
-  position: absolute;
-  bottom: -60px;
-  right: -60px;
-  width: 160px;
-  height: 160px;
-  background: #243b55;
-  border-radius: 50%;
-  z-index: 0;
-  opacity: 0.15;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary), var(--accent), var(--primary));
+    animation: shimmer 3s infinite;
 }
 
-/* ==== BACK BUTTON ==== */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
 .back {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  font-size: 24px;
-  color: #1c2b36;
-  text-decoration: none;
-  transition: transform 0.2s ease;
-  z-index: 2;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--light-gray);
+    border: 2px solid var(--light);
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary);
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
 }
+
 .back:hover {
-  transform: scale(1.15);
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+    transform: translateX(-3px);
 }
 
-/* ==== TITULO ==== */
 h2 {
-  text-align: center;
-  font-size: 26px;
-  font-weight: 700;
-  color: #1c2b36;
-  margin-bottom: 8px;
-  position: relative;
-  z-index: 2;
-}
-.container p {
-  text-align: center;
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 28px;
-  position: relative;
-  z-index: 2;
+    color: var(--primary);
+    text-align: center;
+    margin: 1rem 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    animation: fadeIn 1s ease-out 0.3s both;
 }
 
-/* ==== CAMPOS ==== */
+.container > p {
+    color: var(--text-light);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    animation: fadeIn 1s ease-out 0.5s both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Input Groups */
 .input-group {
-  position: relative;
-  margin-bottom: 20px;
-  z-index: 2;
+    position: relative;
+    margin-bottom: 1.5rem;
+    animation: slideInLeft 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .input-group input {
-  width: 100%;
-  padding: 14px 16px 14px 44px;
-  border: 2px solid #e1e5e9;
-  border-radius: 12px;
-  background-color: #fafbfc;
-  font-size: 15px;
-  transition: all 0.3s ease;
+    width: 100%;
+    padding: 16px;
+    border: 2px solid var(--light);
+    border-radius: 12px;
+    font-size: 1rem;
+    background: var(--light-gray);
+    transition: all 0.3s;
+    font-family: inherit;
 }
 
 .input-group input:focus {
-  outline: none;
-  border-color: #243b55;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(36, 59, 85, 0.1);
+    outline: none;
+    border-color: var(--primary);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    transform: scale(1.02);
 }
 
-/* Icono dentro del input */
-.input-group i {
-  position: absolute;
-  top: 50%;
-  left: 14px;
-  transform: translateY(-50%);
-  color: #888;
-  font-size: 16px;
-  pointer-events: none;
+.input-group label {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s;
+    background: var(--light-gray);
+    padding: 0 4px;
 }
 
-/* ==== BOTONES ==== */
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 0.8rem;
+    color: var(--primary);
+    background: var(--white);
+    transform: translateY(-50%);
+}
+
+/* Botón */
 .btn {
-  width: 100%;
-  background: linear-gradient(135deg, #1c2b36, #243b55);
-  color: white;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.35s ease;
-  border: none;
-  position: relative;
-  z-index: 2;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.4s;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+    color: var(--primary-dark);
+    margin-top: 1rem;
+    animation: fadeIn 1s ease-out 1.1s both;
 }
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
 .btn:hover {
-  background: linear-gradient(135deg, #243b55, #2d4c70);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(28, 43, 54, 0.35);
+    background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary) 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(247, 173, 25, 0.3);
 }
 
-/* ==== NOTIFICACIÓN FLOTANTE ==== */
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:active {
+    transform: translateY(-1px);
+}
+
+/* NOTIFICACIONES */
 .notificacion {
-  position: fixed;
-  top: 20px; /* aparece encima del formulario */
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: 280px;
-  max-width: 400px;
-  background: #fff;
-  color: #333;
-  font-weight: 500;
-  font-size: 14px;
-  text-align: center;
-  padding: 12px 18px;
-  border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
-
-  /* animación */
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, -30px);
-  transition: all 0.4s ease;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 18px 22px;
+    border-radius: 12px;
+    color: var(--white);
+    font-weight: 600;
+    z-index: 10000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: translateX(400px) scale(0.9);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    max-width: 320px;
+    backdrop-filter: blur(10px);
+    display: none;
 }
 
-/* cuando está activa */
-.notificacion.show {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translate(-50%, 0);
-}
-
-/* colores según tipo */
 .notificacion.exito {
-  border-left: 6px solid #27ae60;
+    background: linear-gradient(135deg, var(--success) 0%, var(--accent) 100%);
+    transform: translateX(0) scale(1);
+    opacity: 1;
 }
 
 .notificacion.error {
-  border-left: 6px solid #e74c3c;
-}
-
-.notificacion.info {
-  border-left: 6px solid #3498db;
-}
-/* ==== ANIMACIONES ==== */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
+    background: linear-gradient(135deg, var(--error) 0%, #DC2626 100%);
+    transform: translateX(0) scale(1);
     opacity: 1;
-    transform: translateY(0);
-  }
 }
 
-/* ==== RESPONSIVE ==== */
-@media screen and (max-width: 480px) {
-  .container {
-    padding: 28px 22px;
-    border-radius: 16px;
-  }
-  h2 {
-    font-size: 22px;
-  }
-  .btn {
-    font-size: 15px;
-    padding: 12px;
-  }
-  .input-group input {
-    font-size: 14px;
-    padding: 12px 12px 12px 40px;
-  }
+.notificacion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: rgba(255,255,255,0.5);
 }
 
-/* ==== FORMULARIO ==== */
-form {
-  max-width: 380px;
-  margin: 0 auto;
-  padding: 25px;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .container {
+        padding: 2rem 1.5rem;
+        margin: 10px;
+    }
+    
+    .back {
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-bottom: 1rem;
+        align-self: flex-start;
+    }
+    
+    h2 {
+        font-size: 1.6rem;
+        margin-top: 0;
+    }
+    
+    .notificacion {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    body {
+        animation: gradientShift 12s ease infinite;
+    }
 }
 
-/* ==== GRUPOS ==== */
-.input-group {
-  position: relative;
-  margin-bottom: 22px;
-  z-index: 2;
+@media (max-width: 480px) {
+    .container {
+        padding: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.4rem;
+    }
+    
+    .input-group input {
+        padding: 14px;
+    }
 }
 
-/* ==== INPUT ==== */
-.input-group input {
-  width: 100%;
-  padding: 16px 16px 16px 44px; /* espacio por el icono */
-  border: 2px solid #e1e5e9;
-  border-radius: 12px;
-  background-color: #fafbfc;
-  font-size: 15px;
-  transition: all 0.3s ease;
+/* Estilos para validación */
+.input-group input:invalid {
+    border-color: var(--error-light);
 }
 
-.input-group input:focus {
-  outline: none;
-  border-color: #243b55;
-  background-color: #fff;
-  box-shadow: 0 4px 10px rgba(36, 59, 85, 0.15);
+.input-group input:valid {
+    border-color: var(--success-light);
 }
 
-/* ==== LABEL flotante ==== */
-.input-group label {
-  position: absolute;
-  left: 44px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 15px;
-  color: #888;
-  pointer-events: none;
-  transition: all 0.3s ease;
+/* Efecto de carga para el botón */
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
 }
 
-.input-group input:focus ~ label,
-.input-group input:not(:placeholder-shown) ~ label {
-  top: -8px;
-  left: 38px;
-  font-size: 12px;
-  font-weight: 600;
-  background: #fff;
-  padding: 0 6px;
-  color: #243b55;
-  border-radius: 6px;
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
 }
 
-/* ==== ICONOS opcionales ==== */
-.input-group i {
-  position: absolute;
-  top: 50%;
-  left: 14px;
-  transform: translateY(-50%);
-  color: #888;
-  font-size: 16px;
-  pointer-events: none;
-  transition: color 0.3s ease;
-}
-
-.input-group input:focus ~ i {
-  color: #243b55;
-}
-
-/* ==== BOTÓN ==== */
-.btn {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #243b55, #141e30);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(36,59,85,0.3);
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
