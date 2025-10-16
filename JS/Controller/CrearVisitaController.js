@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const oki = await requireAuth();
   if (!oki) return;
 
-
   // Restringir acceso a solo Usuario o Vendedor
   if (!(role.isUsuario())) {
     window.location.replace("index.html");
@@ -107,6 +106,15 @@ function formatTime(time) {
   const ampm = h >= 12 ? "PM" : "AM";
   const displayHour = h % 12 || 12;
   return `${displayHour}:${minute} ${ampm}`;
+}
+
+// ==========================
+// Verificar si un slot de tiempo ya pasó
+// ==========================
+function isTimeSlotPassed(date, time) {
+  const now = new Date();
+  const slotDateTime = buildLocalDate(formatDate(date), time);
+  return slotDateTime < now;
 }
 
 // ==========================
@@ -253,13 +261,15 @@ async function cargarDisponibilidad(idInmueble) {
   }
 }
 
-
 // ==========================
 // Verificar slot disponible
 // ==========================
 function isSlotAvailable(date, time) {
   const dateStr = formatDate(date);
-  return !(occupiedTimes[dateStr] || []).includes(time);
+  const isOccupied = (occupiedTimes[dateStr] || []).includes(time);
+  const isPassed = isTimeSlotPassed(date, time);
+  
+  return !isOccupied && !isPassed;
 }
 
 // ==========================
@@ -300,20 +310,27 @@ function generarCalendario() {
     if (dateObj < today) {
       dayBtn.classList.add("disabled");
       dayBtn.disabled = true;
+      dayBtn.title = "Fecha pasada";
     } else {
       const dateStr = formatDate(dateObj);
       const horasOcupadas = (occupiedTimes[dateStr] || []).map(h => h.length === 5 ? h + ":00" : h);
-      const availableSlots = defaultTimeSlots.filter(t => !horasOcupadas.includes(t));
+      
+      // Verificar slots disponibles excluyendo horas pasadas
+      const availableSlots = defaultTimeSlots.filter(time => {
+        return !horasOcupadas.includes(time) && !isTimeSlotPassed(dateObj, time);
+      });
 
       if (availableSlots.length === 0) {
         dayBtn.classList.add("occupied");
         dayBtn.disabled = true;
+        dayBtn.title = "No hay horarios disponibles";
       } else if (horasOcupadas.length > 0) {
         dayBtn.classList.add("partial-occupied");
-        dayBtn.title = `${horasOcupadas.length} hora(s) ocupada(s)`;
+        dayBtn.title = `${horasOcupadas.length} hora(s) ocupada(s), ${availableSlots.length} disponible(s)`;
         dayBtn.addEventListener("click", () => selectDate(dateObj, dayBtn));
       }
-      else{
+      else {
+        dayBtn.title = `${availableSlots.length} horarios disponibles`;
         dayBtn.addEventListener("click", () => selectDate(dateObj, dayBtn));
       }
     }
@@ -356,8 +373,16 @@ function actualizarTimeSlots() {
 
   const dateStr = formatDate(selectedDate);
   const horasOcupadas = (occupiedTimes[dateStr] || []).map(h => h.length === 5 ? h + ":00" : h);
+  
+  // Filtrar slots disponibles excluyendo horas ocupadas y horas pasadas
+  const availableSlots = defaultTimeSlots.filter(time => {
+    return !horasOcupadas.includes(time) && !isTimeSlotPassed(selectedDate, time);
+  });
 
-  const availableSlots = defaultTimeSlots.filter(t => !horasOcupadas.includes(t));
+  const passedSlots = defaultTimeSlots.filter(time => {
+    return isTimeSlotPassed(selectedDate, time);
+  });
+
   availableCount.textContent = `(${availableSlots.length} disponibles)`;
 
   defaultTimeSlots.forEach(time => {
@@ -367,9 +392,19 @@ function actualizarTimeSlots() {
     btn.textContent = formatTime(time);
     btn.dataset.time = time;
 
-    if (horasOcupadas.includes(time)) {
+    // Verificar si está ocupado
+    const isOccupied = horasOcupadas.includes(time);
+    // Verificar si ya pasó
+    const isPassed = isTimeSlotPassed(selectedDate, time);
+
+    if (isOccupied) {
       btn.disabled = true;
       btn.classList.add("occupied");
+      btn.title = "Horario ocupado";
+    } else if (isPassed) {
+      btn.disabled = true;
+      btn.classList.add("passed");
+      btn.title = "Horario ya pasó";
     } else {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".time-slot.selected").forEach(s => s.classList.remove("selected"));
@@ -426,9 +461,8 @@ async function handleSubmit(e) {
     mostrarNotificacion("La fecha y hora seleccionadas ya están ocupadas.", "error");
     return;
   }
-   const usuario = auth.user;
-
-
+   
+  const usuario = auth.user;
 
   const typeRadio = document.querySelector('input[name="visitType"]:checked');
   if (!typeRadio) {
