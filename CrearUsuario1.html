@@ -1,53 +1,53 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="CSS/CrearCuenta1.css">
-      <link rel="icon" href="IMG/Logo.png" type="image/x-icon">
-  <link rel="shortcut icon" href="IMG/Logo.png" type="image/x-icon"> 
-    <title>ARQOS - Crear una Cuenta</title>
-</head>
-<body>
-  <div class="container">
-    <a href="index.html" class="back">&#x276E;</a>
-    <h2>REGISTRO</h2>
-    <p>Cree el usuario de ingreso</p>
+  <!DOCTYPE html>
+  <html lang="es">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="CSS/CrearCuenta1.css">
+        <link rel="icon" href="IMG/Logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="IMG/Logo.png" type="image/x-icon"> 
+      <title>ARQOS - Crear una Cuenta</title>
+  </head>
+  <body>
+    <div class="container">
+      <a href="index.html" class="back">&#x276E;</a>
+      <h2>REGISTRO</h2>
+      <p>Cree el usuario de ingreso</p>
 
-    <form id="registroForm">
+      <form id="registroForm">
 
-  <div class="input-group">
-    <input type="text" id="usuario" placeholder=" " required />
-    <label for="usuario">Usuario</label>
-  </div>
-
-  <div class="input-group">
-        <input type="password" id="password" placeholder=" " required />
-        <label for="password">Contraseña</label>
-        <span class="toggle-password" data-target="password">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" viewBox="0 0 24 24">
-            <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-6a2 2 0 1 0 .001 3.999A2 2 0 0 0 12 10Z"/>
-          </svg>
-        </span>
-      </div>
-
-      <div class="input-group">
-        <input type="password" id="confirmar" placeholder=" " required />
-        <label for="confirmar">Confirmar Contraseña</label>
-        <span class="toggle-password" data-target="confirmar">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" viewBox="0 0 24 24">
-            <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-6a2 2 0 1 0 .001 3.999A2 2 0 0 0 12 10Z"/>
-          </svg>
-        </span>
-      </div>
-
-  <button type="submit" class="btn">Crear Cuenta</button>
-</form>
-
-  </div>
-
-  <div id="notificacion" class="notificacion">
-    <p id="notificacionMensaje"></p>
+    <div class="input-group">
+      <input type="text" id="usuario" placeholder=" " required />
+      <label for="usuario">Usuario</label>
     </div>
-  <script type = "module" src="JS/Controller/CrearUsuarioController1.js"></script>
-</body>
+
+    <div class="input-group">
+          <input type="password" id="password" placeholder=" " required />
+          <label for="password">Contraseña</label>
+          <span class="toggle-password" data-target="password">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" viewBox="0 0 24 24">
+              <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-6a2 2 0 1 0 .001 3.999A2 2 0 0 0 12 10Z"/>
+            </svg>
+          </span>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="confirmar" placeholder=" " required />
+          <label for="confirmar">Confirmar Contraseña</label>
+          <span class="toggle-password" data-target="confirmar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" viewBox="0 0 24 24">
+              <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-6a2 2 0 1 0 .001 3.999A2 2 0 0 0 12 10Z"/>
+            </svg>
+          </span>
+        </div>
+
+    <button type="submit" class="btn">Crear Cuenta</button>
+  </form>
+
+    </div>
+
+    <div id="notificacion" class="notificacion">
+      <p id="notificacionMensaje"></p>
+      </div>
+    <script type = "module" src="JS/Controller/CrearUsuarioController1.js"></script>
+  </body>
