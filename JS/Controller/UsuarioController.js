@@ -340,6 +340,7 @@ btnConfirmar?.addEventListener('click', async () => {
         localStorage.removeItem('usuario');
         mostrarNotificacion("Cuenta e inmuebles desactivados correctamente.", "exito");
         confirmacionDesactivar.style.display = "none";
+        setTimeout(() =>   cerrarSesion(), /*pasa por SessionController*/ 1500);
         setTimeout(() => window.location.href = "index.html", 1500);
     } catch (error) {
 
