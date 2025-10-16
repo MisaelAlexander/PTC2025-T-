@@ -1,4 +1,4 @@
-import { actualizarUsuarioCompleto, obtenerUbicaciones, subirFotoUsuario, desactivarUsuario, obtenerUsuarioPorId} from '../Service/UsuarioService.js';
+import { actualizarUsuarioCompleto, obtenerUbicaciones, subirFotoUsuario, desactivarUsuario, obtenerUsuarioPorId, desactivarCuenta } from '../Service/UsuarioService.js';
 import { renderUser,auth,cerrarSesion } from "../Controller/SessionController.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -315,6 +315,7 @@ guardarBtn?.addEventListener('click', async () => {
 
 // Eliminar / desactivar cuenta
 eliminarCuentaBtn?.addEventListener('click', () => {
+      console.log("✅ Botón eliminar cuenta CLICKEADO");
     confirmacionDesactivar.style.display = "block";
 });
 
