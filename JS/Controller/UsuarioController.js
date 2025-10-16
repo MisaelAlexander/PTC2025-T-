@@ -313,27 +313,28 @@ guardarBtn?.addEventListener('click', async () => {
    
   });
 
-    // Eliminar / desactivar cuenta
-    eliminarCuentaBtn?.addEventListener('click', () => {
-        confirmacionDesactivar.style.display = "block";
-    });
+ // Eliminar / desactivar cuenta
+eliminarCuentaBtn?.addEventListener('click', () => {
+    confirmacionDesactivar.style.display = "block";
+});
 
-    btnCancelar?.addEventListener('click', () => confirmacionDesactivar.style.display = "none");
+btnCancelar?.addEventListener('click', () => confirmacionDesactivar.style.display = "none");
 
-    btnConfirmar?.addEventListener('click', async () => {
+btnConfirmar?.addEventListener('click', async () => {
+    
+    if (!usuario) return;
+
+    try {
+        // Cambia esta parte para usar el nuevo endpoint
+        await desactivarCuenta(usuario.idusuario || usuario.IDUsuario);
         
-        if (!usuario) return;
-
-        try {
-            const usuarioDTO = { ...usuario, estado: false };
-            await desactivarUsuario(usuario.idusuario || usuario.IDUsuario, usuarioDTO);
-            localStorage.removeItem('usuario');
-            mostrarNotificacion("Cuenta desactivada correctamente.", "exito");
-            confirmacionDesactivar.style.display = "none";
-            setTimeout(() => window.location.href = "index.html", 1500);
-        } catch (error) {
-            console.error(error);
-            mostrarNotificacion("Error al desactivar cuenta.", "error");
-        }
-    });
+        localStorage.removeItem('usuario');
+        mostrarNotificacion("Cuenta e inmuebles desactivados correctamente.", "exito");
+        confirmacionDesactivar.style.display = "none";
+        setTimeout(() => window.location.href = "index.html", 1500);
+    } catch (error) {
+        console.error(error);
+        mostrarNotificacion("Error al desactivar cuenta.", "error");
+    }
+});
 });

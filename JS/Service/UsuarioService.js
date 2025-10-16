@@ -78,27 +78,26 @@ export async function subirFotoUsuario(file) {
 
 
 // Desactivar usuario
-export async function desactivarUsuario(id, usuarioDTO) {
+// Service JavaScript - agrega esta función
+export async function desactivarCuenta(id) {
     try {
-        const response = await fetch(`${API_USE}/Actualizar/${id}`, {
+        const response = await fetch(`${API_USE}/Desactivar/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(usuarioDTO),
             credentials: 'include'
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.mensaje || "Error al desactivar usuario");
+        if (!response.ok) throw new Error(data.mensaje || "Error al desactivar cuenta");
 
-        return data.data;
+        return data;
     } catch (error) {
-        console.error("Error en desactivarUsuario:", error);
+        console.error("Error en desactivarCuenta:", error);
         throw error;
     }
 }
-
 // Obtener usuario por ID
 export async function obtenerUsuarioPorId(id) {
     try {
