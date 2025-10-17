@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p><strong>Fecha:</strong> ${v.fecha} - ${v.hora}</p>
             <p><strong>Estado:</strong> ${v.estado}</p>
             <p><strong>Tipo:</strong> ${v.tipovisita}</p>
-             <p><strong>Tipo:</strong> ${v.descripcion}</p>
+             <p><strong>Nota:</strong> ${v.descripcion}</p>
           </div>
         `;
 
