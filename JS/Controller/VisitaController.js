@@ -137,14 +137,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         else if (v.estado === "En espera") card.classList.add("estado-espera");
 
         card.innerHTML = `
-          <div class="request-info">
-            <p class="client-name">${v.inmuebletitulo}</p>
-            <p><strong>Precio:</strong> $${v.inmuebleprecio}</p>
-            <p><strong>Fecha:</strong> ${v.fecha} - ${v.hora}</p>
-            <p><strong>Estado:</strong> ${v.estado}</p>
-            <p><strong>Tipo:</strong> ${v.tipovisita}</p>
-             <p><strong>Nota:</strong> ${v.descripcion}</p>
-          </div>
+        <div class="request-info">
+  <p class="client-name">${v.inmuebletitulo}</p>
+  <p><strong>Precio:</strong> $${v.inmuebleprecio}</p>
+  <p><strong>Fecha:</strong> ${v.fecha} - ${v.hora}</p>
+  <p><strong>Estado:</strong> ${v.estado}</p>
+  <p><strong>Tipo:</strong> ${v.tipovisita}</p>
+  ${v.descripcion ? `<p><strong>Nota:</strong> ${v.descripcion}</p>` : ''}
+</div>
         `;
 
         // ------------------ BOTONES SOLO PARA VENDEDOR ------------------
