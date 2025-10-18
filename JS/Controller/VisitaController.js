@@ -7,10 +7,10 @@ import {
   obtenerVisitasPorEstadoYCliente,
   obtenerVisitasPorEstadoYVendedor,
   actualizarVisita,
-  obtenerVisitasPorInmueble
+  obtenerVisitasPorInmueble,
+  generarEnlaceGoogleCalendar
 } from "../Service/VisitaService.js";
 
-import { googleCalendarService } from "../Service/GoogleCalendarApiService.js";
 import { requireAuth, auth, role } from "./SessionController.js";
 
 // ---------- FUNCIONES DE NOTIFICACIÓN ----------
@@ -22,8 +22,8 @@ function mostrarNotificacion(mensaje, tipo = "info") {
   noti.className = `notificacion show ${tipo}`;
 
   setTimeout(() => {
-    noti.className = "notificacion";
-  }, 5000);
+    noti.className = "notificacion"; // ocultar
+  }, 3000);
 }
 
 // ---------- FUNCIONES DE CONFIRMACIÓN ----------
@@ -58,78 +58,6 @@ function confirmarAccion(mensaje) {
   });
 }
 
-// ---------- FUNCIÓN PARA ACEPTAR VISITA AUTOMÁTICAMENTE ----------
-async function aceptarVisitaConCalendar(visita) {
-  let btnAceptar = null;
-  
-  try {
-    console.log(' Aceptando visita...');
-    
-    // 1. Primero actualizar el estado en la base de datos
-    await actualizarVisita(visita.idvisita, { ...visita, idestado: 1 });
-    
-    // 2. Intentar crear evento automáticamente
-    try {
-      const resultado = await googleCalendarService.crearEventoAutomatico(visita);
-      
-      mostrarNotificacion(
-        ` Visita aceptada y agregada al calendario automáticamente | <a href="${resultado.eventLink}" target="_blank">Ver evento</a>`, 
-        "exito"
-      );
-      
-      return resultado;
-      
-    } catch (autoError) {
-      // 3. Si falla la autenticación automática, ofrecer opción manual
-      if (autoError.message === 'popup_blocked') {
-        const enlaceManual = googleCalendarService.generarEnlaceManual(visita);
-        
-        const usarManual = await confirmarAccion(
-          `Para agregar la visita a Google Calendar, necesitamos que autorices la aplicación.\n\n¿Quieres abrir Google Calendar para agregar el evento manualmente?`
-        );
-        
-        if (usarManual) {
-          window.open(enlaceManual, '_blank', 'noopener,noreferrer');
-          mostrarNotificacion(
-            " Visita aceptada. Se abrió Google Calendar para que agregues el evento manualmente.", 
-            "info"
-          );
-        } else {
-          mostrarNotificacion(
-            " Visita aceptada. Puedes agregarla a tu calendario más tarde.", 
-            "info"
-          );
-        }
-        
-        return { success: true, method: 'manual' };
-      }
-      
-      // 4. Si es otro error, mostrar mensaje genérico
-      throw autoError;
-    }
-    
-  } catch (error) {
-    console.error(' Error en aceptarVisitaConCalendar:', error);
-    
-    // Mostrar error específico
-    let mensajeError = "Error al procesar la visita";
-    
-    if (error.message.includes('autenticación') || error.message.includes('token')) {
-      mensajeError = "Error de autenticación con Google Calendar";
-    }
-    
-    mostrarNotificacion(
-      ` Visita aceptada en el sistema, pero: ${mensajeError}`, 
-      "info"
-    );
-    
-    // Aún así recargar la lista
-    await cargarVisitas(currentPage);
-    
-    throw error;
-  }
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   // ------------------ SEGURIDAD ------------------
   const acceso = await requireAuth();
@@ -154,9 +82,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const inmuebleId = urlParams.get("id");
 
+
   if (inmuebleId && !role.isVendedor()) {
     lista.innerHTML = "<p style='color:red;'>No tienes permiso para ver estas visitas.</p>";
-    return;
+    return; // bloquear acceso si no es vendedor
   }
 
   // ==================== CARGAR VISITAS ====================
@@ -164,6 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       let response;
 
+      // Si viene id de inmueble, cargar solo ese inmueble
       if (inmuebleId) {
         response = await obtenerVisitasPorInmueble(inmuebleId, page, pageSize);
       } else if (currentSearch.trim() !== "") {
@@ -201,6 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const card = document.createElement("div");
         card.classList.add("request-card");
 
+
         // ------------------ ESTADOS ------------------
         if (v.estado === "Aceptado") card.classList.add("estado-aceptado");
         else if (v.estado === "Rechazado") card.classList.add("estado-rechazado");
@@ -208,46 +139,39 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         card.innerHTML = `
         <div class="request-info">
-          <p class="client-name">${v.inmuebletitulo}</p>
-          <p><strong>Precio:</strong> $${v.inmuebleprecio}</p>
-          <p><strong>Fecha:</strong> ${v.fecha} - ${v.hora}</p>
-          <p><strong>Estado:</strong> ${v.estado}</p>
-          <p><strong>Tipo:</strong> ${v.tipovisita}</p>
-          ${v.descripcion ? `<p><strong>Nota:</strong> ${v.descripcion}</p>` : ''}
-          ${v.ubicacion ? `<p><strong>Ubicación:</strong> ${v.ubicacion}</p>` : ''}
-        </div>
+  <p class="client-name">${v.inmuebletitulo}</p>
+  <p><strong>Precio:</strong> $${v.inmuebleprecio}</p>
+  <p><strong>Fecha:</strong> ${v.fecha} - ${v.hora}</p>
+  <p><strong>Estado:</strong> ${v.estado}</p>
+  <p><strong>Tipo:</strong> ${v.tipovisita}</p>
+  ${v.descripcion ? `<p><strong>Nota:</strong> ${v.descripcion}</p>` : ''}
+</div>
         `;
 
-        // ------------------ BOTONES SEGÚN ROL Y ESTADO ------------------
-        const btnContainer = document.createElement("div");
-        btnContainer.classList.add("acciones");
-
-        // SOLO PARA VENDEDOR Y SOLO CUANDO ESTÁ "EN ESPERA" (idestado = 3)
+        /*Nuevos botones apra agregarlo a calendar (por el momento manual mucha wea a modificar si es automatico) */
+         const btnContainer = document.createElement("div");
+         btnContainer.classList.add("acciones");
+        // ------------------ BOTONES SOLO PARA VENDEDOR ------------------ 
         if (role.isVendedor() && v.idestado === 3) {
+
           const btnAceptar = document.createElement("button");
-          btnAceptar.textContent = " Aceptar";
+          btnAceptar.textContent = "Aceptar";
           btnAceptar.classList.add("btn-aceptar");
           btnAceptar.addEventListener("click", async () => {
-            const confirmar = await confirmarAccion("¿Aceptar esta visita? Se guardara un recordatorio en tu calendario de google.");
+            const confirmar = await confirmarAccion("¿Estás seguro de aceptar esta visita?");
             if (!confirmar) return;
 
             try {
-              // Mostrar loading
-              btnAceptar.textContent = "Procesando...";
-              btnAceptar.disabled = true;
-
-              await aceptarVisitaConCalendar(v);
-              await cargarVisitas(currentPage);
-              
-            } catch (error) {
-              console.error('Error al aceptar visita:', error);
-              btnAceptar.textContent = " Aceptar y Agregar al Calendario";
-              btnAceptar.disabled = false;
+              await actualizarVisita(v.idvisita, { ...v, idestado: 1 });
+              mostrarNotificacion("Visita aceptada correctamente", "exito");
+              cargarVisitas(currentPage);
+            } catch {
+              mostrarNotificacion("Error al aceptar la visita", "error");
             }
           });
 
           const btnRechazar = document.createElement("button");
-          btnRechazar.textContent = " Rechazar";
+          btnRechazar.textContent = "Rechazar";
           btnRechazar.classList.add("btn-rechazar");
           btnRechazar.addEventListener("click", async () => {
             const confirmar = await confirmarAccion("¿Estás seguro de rechazar esta visita?");
@@ -264,30 +188,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           btnContainer.appendChild(btnAceptar);
           btnContainer.appendChild(btnRechazar);
+       //   card.appendChild(btnContainer);
         }
+        //Se da la opciond e guardar solo si la visita fue aceptada
+    if (v.idestado === 1) {
+        const btnCalendar = document.createElement("button");
+        btnCalendar.textContent = "Agregar a Google Calendar";
+        btnCalendar.classList.add("btn-calendar");
+        btnCalendar.addEventListener("click", () => {
+            const enlaceCalendar = generarEnlaceGoogleCalendar(v);
+            window.open(enlaceCalendar, '_blank');
+        });
+        btnContainer.appendChild(btnCalendar);
+    }
+if (btnContainer.children.length > 0) {
+        card.appendChild(btnContainer);
+    }
 
-        // Para visitas ya aceptadas, mostrar info del calendario
-        if (v.idestado === 1) {
-          const calendarInfo = document.createElement("div");
-          calendarInfo.classList.add("calendar-info");
-          calendarInfo.innerHTML = `
-            <p style="color: var(--accent); font-weight: 600;">
-               Tienes un recordatorio de esta visita en tu Google Calendar.
-            </p>
-          `;
-          btnContainer.appendChild(calendarInfo);
-        }
-
-        if (btnContainer.children.length > 0) {
-          card.appendChild(btnContainer);
-        }
-
-        lista.appendChild(card);
+    lista.appendChild(card);
       });
 
       renderizarNumeros();
     } catch (err) {
-      console.error('Error cargando visitas:', err);
+
       lista.innerHTML = `<p style="color:red;">Error al cargar visitas</p>`;
     }
   }
@@ -365,7 +288,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         tiposContainer.appendChild(btn);
       });
     } catch (err) {
-      console.error('Error cargando tipos:', err);
       tiposContainer.innerHTML = "<p>Error al cargar tipos de visita</p>";
     }
   }
@@ -383,18 +305,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     cargarVisitas(currentPage);
   });
 
-  // ==================== INICIALIZAR GOOGLE APIS ====================
-  async function inicializarGoogleApis() {
-    try {
-      await googleCalendarService.initializeGoogleApis();
-      console.log('Google APIs inicializadas correctamente');
-    } catch (error) {
-      console.warn('No se pudieron inicializar Google APIs:', error);
-    }
-  }
-
   // ==================== INICIO ====================
-  await inicializarGoogleApis();
   await cargarTipos();
   await cargarVisitas(0);
 });
