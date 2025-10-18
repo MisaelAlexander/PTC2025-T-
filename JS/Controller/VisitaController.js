@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           btnAceptar.textContent = " Aceptar";
           btnAceptar.classList.add("btn-aceptar");
           btnAceptar.addEventListener("click", async () => {
-            const confirmar = await confirmarAccion("¿Aceptar esta visita? Se guardara unr ecordtorio en tu calendariod e google.");
+            const confirmar = await confirmarAccion("¿Aceptar esta visita? Se guardara un recordatorio en tu calendario de google.");
             if (!confirmar) return;
 
             try {

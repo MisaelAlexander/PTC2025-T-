@@ -9,6 +9,10 @@
   --accent-light: #34D399;
   --danger: #EF4444;
   --danger-light: #FCA5A5;
+  --warning: #F59E0B;
+  --warning-light: #FBBF24;
+  --calendar: #4285F4;
+  --calendar-light: #669DF6;
   --bg: #F8FAFC;
   --card-bg: #FFFFFF;
   --text: #1E293B;
@@ -259,7 +263,10 @@ body {
   font-weight: 600;
 }
 
-/* Acciones para vendedor */
+/* ==================== */
+/* BOTONES DE ACCIONES */
+/* ==================== */
+
 .acciones {
   display: flex;
   gap: 0.75rem;
@@ -268,7 +275,8 @@ body {
   border-top: 1px solid var(--gray-200);
 }
 
-.btn-aceptar, .btn-rechazar {
+/* Botones base */
+.btn-aceptar, .btn-rechazar, .btn-calendar, .btn-calendar-manual {
   flex: 1;
   padding: 0.75rem 1rem;
   border: none;
@@ -279,9 +287,14 @@ body {
   font-size: 0.9rem;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-.btn-aceptar::before, .btn-rechazar::before {
+/* Efecto de brillo en hover */
+.btn-aceptar::before, .btn-rechazar::before, .btn-calendar::before, .btn-calendar-manual::before {
   content: '';
   position: absolute;
   top: 0;
@@ -292,10 +305,11 @@ body {
   transition: left 0.5s;
 }
 
-.btn-aceptar:hover::before, .btn-rechazar:hover::before {
+.btn-aceptar:hover::before, .btn-rechazar:hover::before, .btn-calendar:hover::before, .btn-calendar-manual:hover::before {
   left: 100%;
 }
 
+/* Botón Aceptar */
 .btn-aceptar {
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
   color: white;
@@ -306,6 +320,18 @@ body {
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
+/* Botón Aceptar con Calendar */
+.btn-aceptar-calendar {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--calendar) 100%);
+  color: white;
+}
+
+.btn-aceptar-calendar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+/* Botón Rechazar */
 .btn-rechazar {
   background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
   color: white;
@@ -316,7 +342,201 @@ body {
   box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
 
-/* Paginación */
+/* Botón Google Calendar Automático */
+.btn-calendar {
+  background: linear-gradient(135deg, var(--calendar) 0%, var(--calendar-light) 100%);
+  color: white;
+}
+
+.btn-calendar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+}
+
+/* Botón Calendar Manual */
+.btn-calendar-manual {
+  background: linear-gradient(135deg, var(--warning) 0%, var(--warning-light) 100%);
+  color: white;
+}
+
+.btn-calendar-manual:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+/* Estados de botones deshabilitados */
+.btn-aceptar:disabled, .btn-rechazar:disabled, .btn-calendar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-aceptar:disabled:hover, .btn-rechazar:disabled:hover, .btn-calendar:disabled:hover {
+  box-shadow: none;
+}
+
+/* Animación para botón de calendar en visitas aceptadas */
+.request-card.estado-aceptado .btn-calendar {
+  animation: pulse-calendar 2s infinite;
+}
+
+@keyframes pulse-calendar {
+  0% {
+    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(66, 133, 244, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+  }
+}
+
+/* ==================== */
+/* INFORMACIÓN DE CALENDAR */
+/* ==================== */
+
+.calendar-info {
+  background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.calendar-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.calendar-warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fef7cd 100%);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+}
+
+.calendar-warning p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+/* ==================== */
+/* AYUDA PARA POPUPS */
+/* ==================== */
+
+.popup-help-container {
+  background: linear-gradient(135deg, #fff3cd 0%, #fef7cd 100%);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin: 1rem 0;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.popup-help-container h4 {
+  color: var(--warning);
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.popup-help-container ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.popup-help-container li {
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.popup-help-btn {
+  background: var(--warning);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.popup-help-btn:hover {
+  background: #d97706;
+  transform: translateY(-1px);
+}
+
+/* ==================== */
+/* NOTIFICACIONES MEJORADAS */
+/* ==================== */
+
+.notificacion {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius);
+  color: white;
+  font-weight: 600;
+  z-index: 10000;
+  box-shadow: var(--shadow);
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  max-width: 400px;
+}
+
+.notificacion.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.notificacion.exito {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+}
+
+.notificacion.error {
+  background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+}
+
+.notificacion.info {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+}
+
+.notificacion.warning {
+  background: linear-gradient(135deg, var(--warning) 0%, var(--warning-light) 100%);
+}
+
+.notificacion.calendar {
+  background: linear-gradient(135deg, var(--calendar) 0%, var(--calendar-light) 100%);
+}
+
+.notificacion a {
+  color: white;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* ==================== */
+/* PAGINACIÓN */
+/* ==================== */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -391,40 +611,6 @@ body {
   border: 1px solid var(--gray-200);
 }
 
-/* Notificaciones */
-.notificacion {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 1rem 1.5rem;
-  border-radius: var(--radius);
-  color: white;
-  font-weight: 600;
-  z-index: 10000;
-  box-shadow: var(--shadow);
-  transform: translateX(400px);
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  max-width: 320px;
-}
-
-.notificacion.show {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.notificacion.exito {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-}
-
-.notificacion.error {
-  background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
-}
-
-.notificacion.info {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-}
-
 /* Modal de confirmación */
 .modal {
   display: none;
@@ -446,7 +632,7 @@ body {
   padding: 2rem;
   border-radius: var(--radius);
   text-align: center;
-  max-width: 400px;
+  max-width: 450px;
   width: 90%;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   animation: modalPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -502,7 +688,10 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive */
+/* ==================== */
+/* RESPONSIVE */
+/* ==================== */
+
 @media (max-width: 1024px) {
   .app-main {
     margin-left: 280px;
@@ -548,6 +737,13 @@ body {
   
   .acciones {
     flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .acciones .btn-calendar,
+  .acciones .btn-calendar-manual {
+    order: -1;
+    width: 100%;
   }
   
   .modal-buttons {
@@ -557,6 +753,12 @@ body {
   .pagination {
     flex-wrap: wrap;
     gap: 0.5rem;
+  }
+  
+  .notificacion {
+    right: 1rem;
+    left: 1rem;
+    max-width: none;
   }
 }
 
@@ -582,10 +784,9 @@ body {
     font-size: 0.85rem;
   }
   
-  .notificacion {
-    right: 1rem;
-    left: 1rem;
-    max-width: none;
+  .btn-aceptar, .btn-rechazar, .btn-calendar, .btn-calendar-manual {
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -611,132 +812,17 @@ body {
   }
 }
 
-/* Estilos para botones de acciones */
+/* Mejoras visuales generales */
+.btn-calendar, .btn-calendar-manual {
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
 
-/* Botón de Google Calendar - Integrado al diseño existente */
+/* Efecto de profundidad para botones */
 .btn-calendar {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    border: none;
-    border-radius: var(--radius);
-    background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.2);
 }
 
-.btn-calendar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.5s;
-}
-
-.btn-calendar:hover::before {
-    left: 100%;
-}
-
-.btn-calendar:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
-    background: linear-gradient(135deg, #3367d6 0%, #2851a3 100%);
-}
-
-.btn-calendar:active {
-    transform: translateY(0);
-}
-
-/* Icono del calendario */
-.btn-calendar::after {
-    font-size: 1rem;
-}
-
-/* Estados responsive para las acciones */
-.acciones {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--gray-200);
-}
-
-/* Cuando hay múltiples botones en acciones */
-.acciones .btn-calendar {
-    flex: 1;
-    min-width: auto;
-}
-
-/* Cuando es el único botón */
-.acciones:has(.btn-calendar:only-child) .btn-calendar {
-    flex: none;
-    min-width: 200px;
-}
-
-/* Responsive para acciones */
-@media (max-width: 768px) {
-    .acciones {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .acciones .btn-calendar {
-        width: 100%;
-        order: -1; /* El botón de calendar primero en móvil */
-    }
-    
-    .btn-calendar {
-        padding: 0.875rem 1rem;
-        font-size: 0.95rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .btn-calendar {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-    }
-    
-    .acciones:has(.btn-calendar:only-child) .btn-calendar {
-        min-width: 100%;
-    }
-}
-
-/* Estados de las tarjetas con botón calendar */
-.request-card.estado-aceptado .btn-calendar {
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 6px rgba(66, 133, 244, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
-    }
-}
-
-/* Mejora visual para el texto del botón */
-.btn-calendar {
-    letter-spacing: 0.3px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-}
-
-/* Efecto de profundidad */
-.btn-calendar {
-    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.2);
+.btn-calendar-manual {
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
 }
