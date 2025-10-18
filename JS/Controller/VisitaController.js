@@ -191,16 +191,26 @@ document.addEventListener("DOMContentLoaded", async () => {
        //   card.appendChild(btnContainer);
         }
         //Se da la opciond e guardar solo si la visita fue aceptada
-    if (v.idestado === 1) {
-        const btnCalendar = document.createElement("button");
-        btnCalendar.textContent = "Agregar a Google Calendar";
-        btnCalendar.classList.add("btn-calendar");
-        btnCalendar.addEventListener("click", () => {
-            const enlaceCalendar = generarEnlaceGoogleCalendar(v);
-            window.open(enlaceCalendar, '_blank');
-        });
-        btnContainer.appendChild(btnCalendar);
-    }
+ if (v.idestado === 1) {
+    const btnCalendar = document.createElement("button");
+    btnCalendar.textContent = "Agregar a Google Calendar";
+    btnCalendar.classList.add("btn-calendar");
+
+    btnCalendar.addEventListener("click", async () => {
+        const confirmar = await confirmarAccion("¿Deseas agregar esta visita a tu calendario de Google?");
+        if (!confirmar) return; // si elige "No", no hacer nada
+
+        const enlaceCalendar = generarEnlaceGoogleCalendar(v);
+        window.open(enlaceCalendar, '_blank');
+
+        // ocultar el botón después de confirmar y abrir el enlace
+        btnCalendar.style.display = "none";
+        mostrarNotificacion("Evento enviado a Google Calendar", "exito");
+    });
+
+    btnContainer.appendChild(btnCalendar);
+}
+
 if (btnContainer.children.length > 0) {
         card.appendChild(btnContainer);
     }
