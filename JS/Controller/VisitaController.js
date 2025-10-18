@@ -7,7 +7,8 @@ import {
   obtenerVisitasPorEstadoYCliente,
   obtenerVisitasPorEstadoYVendedor,
   actualizarVisita,
-  obtenerVisitasPorInmueble
+  obtenerVisitasPorInmueble,
+  generarEnlaceGoogleCalendar
 } from "../Service/VisitaService.js";
 
 import { requireAuth, auth, role } from "./SessionController.js";
@@ -147,10 +148,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 </div>
         `;
 
-        // ------------------ BOTONES SOLO PARA VENDEDOR ------------------
+        /*Nuevos botones apra agregarlo a calendar (por el momento manual mucha wea a modificar si es automatico) */
+         const btnContainer = document.createElement("div");
+         btnContainer.classList.add("acciones");
+        // ------------------ BOTONES SOLO PARA VENDEDOR ------------------ 
         if (role.isVendedor() && v.idestado === 3) {
-          const btnContainer = document.createElement("div");
-          btnContainer.classList.add("acciones");
 
           const btnAceptar = document.createElement("button");
           btnAceptar.textContent = "Aceptar";
@@ -186,10 +188,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           btnContainer.appendChild(btnAceptar);
           btnContainer.appendChild(btnRechazar);
-          card.appendChild(btnContainer);
+       //   card.appendChild(btnContainer);
         }
+        //Se da la opciond e guardar solo si la visita fue aceptada
+ if (v.idestado === 1) {
+    const btnCalendar = document.createElement("button");
+    btnCalendar.textContent = "Agregar a Google Calendar";
+    btnCalendar.classList.add("btn-calendar");
 
-        lista.appendChild(card);
+    btnCalendar.addEventListener("click", async () => {
+        const confirmar = await confirmarAccion("¿Deseas agregar esta visita a tu calendario de Google?");
+        if (!confirmar) return; // si elige "No", no hacer nada
+
+        const enlaceCalendar = generarEnlaceGoogleCalendar(v);
+        window.open(enlaceCalendar, '_blank');
+
+        // ocultar el botón después de confirmar y abrir el enlace
+        btnCalendar.style.display = "none";
+        mostrarNotificacion("Evento enviado a Google Calendar", "exito");
+    });
+
+    btnContainer.appendChild(btnCalendar);
+}
+
+if (btnContainer.children.length > 0) {
+        card.appendChild(btnContainer);
+    }
+
+    lista.appendChild(card);
       });
 
       renderizarNumeros();
