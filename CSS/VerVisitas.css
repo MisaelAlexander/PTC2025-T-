@@ -610,3 +610,22 @@ body {
     background-position: -200% 0;
   }
 }
+
+/* Estilos para botones de acciones */
+
+.btn-calendar {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+
+
+.btn-calendar:hover {
+    background-color: #3367d6;
+}
+
