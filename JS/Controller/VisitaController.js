@@ -60,31 +60,71 @@ function confirmarAccion(mensaje) {
 
 // ---------- FUNCIÓN PARA ACEPTAR VISITA AUTOMÁTICAMENTE ----------
 async function aceptarVisitaConCalendar(visita) {
+  let btnAceptar = null;
+  
   try {
-    console.log(' Aceptando visita y creando evento automático...');
+    console.log(' Aceptando visita...');
     
     // 1. Primero actualizar el estado en la base de datos
     await actualizarVisita(visita.idvisita, { ...visita, idestado: 1 });
     
-    // 2. Luego crear el evento automáticamente en Google Calendar
-    const resultado = await googleCalendarService.crearEventoAutomatico(visita);
-    
-    // 3. Mostrar notificación de éxito con enlace al evento
-    mostrarNotificacion(
-      ` Visita aceptada y agregada al calendario automáticamente | <a href="${resultado.eventLink}" target="_blank">Ver evento</a>`, 
-      "exito"
-    );
-    
-    return resultado;
+    // 2. Intentar crear evento automáticamente
+    try {
+      const resultado = await googleCalendarService.crearEventoAutomatico(visita);
+      
+      mostrarNotificacion(
+        ` Visita aceptada y agregada al calendario automáticamente | <a href="${resultado.eventLink}" target="_blank">Ver evento</a>`, 
+        "exito"
+      );
+      
+      return resultado;
+      
+    } catch (autoError) {
+      // 3. Si falla la autenticación automática, ofrecer opción manual
+      if (autoError.message === 'popup_blocked') {
+        const enlaceManual = googleCalendarService.generarEnlaceManual(visita);
+        
+        const usarManual = await confirmarAccion(
+          `Para agregar la visita a Google Calendar, necesitamos que autorices la aplicación.\n\n¿Quieres abrir Google Calendar para agregar el evento manualmente?`
+        );
+        
+        if (usarManual) {
+          window.open(enlaceManual, '_blank', 'noopener,noreferrer');
+          mostrarNotificacion(
+            " Visita aceptada. Se abrió Google Calendar para que agregues el evento manualmente.", 
+            "info"
+          );
+        } else {
+          mostrarNotificacion(
+            " Visita aceptada. Puedes agregarla a tu calendario más tarde.", 
+            "info"
+          );
+        }
+        
+        return { success: true, method: 'manual' };
+      }
+      
+      // 4. Si es otro error, mostrar mensaje genérico
+      throw autoError;
+    }
     
   } catch (error) {
-    console.error('Error en aceptarVisitaConCalendar:', error);
+    console.error(' Error en aceptarVisitaConCalendar:', error);
     
-    // Si falla Google Calendar pero sí se actualizó el estado
+    // Mostrar error específico
+    let mensajeError = "Error al procesar la visita";
+    
+    if (error.message.includes('autenticación') || error.message.includes('token')) {
+      mensajeError = "Error de autenticación con Google Calendar";
+    }
+    
     mostrarNotificacion(
-      " Visita aceptada, pero no se pudo agregar al calendario automáticamente. Error: " + error.message, 
+      ` Visita aceptada en el sistema, pero: ${mensajeError}`, 
       "info"
     );
+    
+    // Aún así recargar la lista
+    await cargarVisitas(currentPage);
     
     throw error;
   }

@@ -66,7 +66,24 @@
         </div>
     </div>
 </div>
+<div id="popup-help" style="display: none; background: #fff3cd; border: 1px solid #ffeaa7; padding: 1rem; margin: 1rem 0; border-radius: 8px;">
+    <h4>🚫 ¿Problemas con la ventana de autorización?</h4>
+    <p>Sigue estos pasos:</p>
+    <ol>
+        <li>Haz click en el icono de <strong>bloqueo de popups</strong> en la barra de direcciones</li>
+        <li>Selecciona <strong>"Permitir ventanas emergentes"</strong> para este sitio</li>
+        <li>Intenta aceptar la visita nuevamente</li>
+    </ol>
+    <button onclick="document.getElementById('popup-help').style.display = 'none'" style="background: #f59e0b; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px;">
+        Entendido
+    </button>
+</div>
 
+<script>
+function mostrarAyudaPopups() {
+    document.getElementById('popup-help').style.display = 'block';
+}
+</script>
   <script type="module" src="JS/Controller/VisitaController.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
