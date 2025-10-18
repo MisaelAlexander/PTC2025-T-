@@ -185,10 +185,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         // SOLO PARA VENDEDOR Y SOLO CUANDO ESTÁ "EN ESPERA" (idestado = 3)
         if (role.isVendedor() && v.idestado === 3) {
           const btnAceptar = document.createElement("button");
-          btnAceptar.textContent = " Aceptar y Agregar al Calendario";
+          btnAceptar.textContent = " Aceptar";
           btnAceptar.classList.add("btn-aceptar");
           btnAceptar.addEventListener("click", async () => {
-            const confirmar = await confirmarAccion("¿Aceptar esta visita? Se agregará AUTOMÁTICAMENTE a tu Google Calendar.");
+            const confirmar = await confirmarAccion("¿Aceptar esta visita? Se guardara unr ecordtorio en tu calendariod e google.");
             if (!confirmar) return;
 
             try {
@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           calendarInfo.classList.add("calendar-info");
           calendarInfo.innerHTML = `
             <p style="color: var(--accent); font-weight: 600;">
-               Esta visita fue agregada automáticamente a Google Calendar
+               Tienes un recordatorio de esta visita en tu Google Calendar.
             </p>
           `;
           btnContainer.appendChild(calendarInfo);
