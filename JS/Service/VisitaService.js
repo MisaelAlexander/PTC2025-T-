@@ -133,27 +133,63 @@ export async function obtenerVisitasPorInmueble(id, page = 0, size = 10) {
 
 // 1 Espero que funcione
 //2 Lo que hace esto es amndar la
-export async function generarEnlaceGoogleCalendar(visita) 
-{
-  //Formatear la fecha y hora de inicio y fin para google calendar
-  const fechaInicio = new Date(`${visita.fecha}T${visita.hora}`);
-  const fechaFin = new Date(fechaInicio.getTime() + 60 * 60 * 1000); // +1 hora por defecto
+// Generar enlace para Google Calendar - Versión corregida
+export function generarEnlaceGoogleCalendar(visita) {
+    console.log('Datos de la visita recibidos:', visita); // Para debug
+    
+    try {
+        // Validar que tenemos fecha y hora
+        if (!visita.fecha || !visita.hora) {
+            console.error('Fecha u hora faltantes:', { fecha: visita.fecha, hora: visita.hora });
+            return null;
+        }
 
-  const formatearFecha = (fecha) => {
-        return fecha.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-  };
+        // Formatear fecha y hora correctamente
+        const fechaInicio = new Date(`${visita.fecha}T${visita.hora}`);
+        
+        // Validar que la fecha es válida
+        if (isNaN(fechaInicio.getTime())) {
+            console.error('Fecha inválida:', `${visita.fecha}T${visita.hora}`);
+            return null;
+        }
 
-  //Darle formato apra que se guarde en google calendar
-  const params = new URLSearchParams({
-    action: 'TEMPLATE',
-    /*Texto de la visita */
-    text: `Visita: ${visita.inmuebletitulo}`,
-        /*Duracion*/
-    dates: `${formatearFecha(fechaInicio)}/${formatearFecha(fechaFin)}`,
-        /*Descripcion de la visita (Solo si hay) */
-    details: visita.descripcion  || 'No hay descripción',
-        /*Texto de la visita (Direccion ingresada por el vendedor)*/
-    location: visita.ubicacion  || 'No hay dirección',
-  });
-  return `https://calendar.google.com/calendar/render?${params}`;
+        // Agregar 1 hora de duración por defecto
+        const fechaFin = new Date(fechaInicio.getTime() + 60 * 60 * 1000);
+
+        // Formato requerido por Google: YYYYMMDDTHHMMSSZ
+        const formatearFechaGoogle = (fecha) => {
+            return fecha.toISOString()
+                .replace(/-/g, '')
+                .replace(/:/g, '')
+                .split('.')[0] + 'Z';
+        };
+
+        const fechaInicioFormateada = formatearFechaGoogle(fechaInicio);
+        const fechaFinFormateada = formatearFechaGoogle(fechaFin);
+
+        console.log('Fechas formateadas:', { inicio: fechaInicioFormateada, fin: fechaFinFormateada });
+
+        // Crear parámetros para Google Calendar
+        const params = new URLSearchParams({
+            action: 'TEMPLATE',
+            text: `Visita: ${visita.inmuebletitulo || 'Inmueble'}`,
+            dates: `${fechaInicioFormateada}/${fechaFinFormateada}`,
+            details: `Visita programada para el inmueble: ${visita.inmuebletitulo || 'Inmueble'}
+Precio: $${visita.inmuebleprecio || 'No especificado'}
+Tipo: ${visita.tipovisita || 'Visita'}
+Nota: ${visita.descripcion || 'Sin notas adicionales'}
+Estado: ${visita.estado || 'Aceptada'}`,
+            location: visita.ubicacion || 'Ubicación por confirmar',
+            sf: 'true',
+            output: 'xml'
+        });
+
+        const url = `https://calendar.google.com/calendar/render?${params.toString()}`;
+        console.log('URL generada:', url); // Para debug
+        
+        return url;
+    } catch (error) {
+        console.error('Error generando enlace de Google Calendar:', error);
+        return null;
+    }
 }
