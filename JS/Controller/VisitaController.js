@@ -59,30 +59,40 @@ function confirmarAccion(mensaje) {
 }
 
 // ---------- FUNCIÓN PARA ACEPTAR VISITA AUTOMÁTICAMENTE ----------
+// En VisitaController.js
 async function aceptarVisitaConCalendar(visita) {
+  let btnAceptar = null;
+  
   try {
-    console.log(' Aceptando visita y creando evento automático...');
+    console.log('🔄 Aceptando visita y creando evento automático...');
     
     // 1. Primero actualizar el estado en la base de datos
-    await actualizarVisita(visita.idvisita, { ...visita, idestado: 1 });
+    await actualizarVisita(visita.idvisita, { ...v, idestado: 1 });
     
     // 2. Luego crear el evento automáticamente en Google Calendar
     const resultado = await googleCalendarService.crearEventoAutomatico(visita);
     
-    // 3. Mostrar notificación de éxito con enlace al evento
+    // 3. Mostrar notificación de éxito
     mostrarNotificacion(
-      ` Visita aceptada y agregada al calendario automáticamente | <a href="${resultado.eventLink}" target="_blank">Ver evento</a>`, 
+      `✅ Visita aceptada y agregada al calendario automáticamente | <a href="${resultado.eventLink}" target="_blank">Ver evento</a>`, 
       "exito"
     );
     
     return resultado;
     
   } catch (error) {
-    console.error('Error en aceptarVisitaConCalendar:', error);
+    console.error('❌ Error en aceptarVisitaConCalendar:', error);
     
-    // Si falla Google Calendar pero sí se actualizó el estado
+    // Mensajes de error específicos
+    let mensajeError = error.message;
+    
+    // Si es error de autenticación, ofrecer solución
+    if (error.message.includes('Sesión expirada') || error.message.includes('Sin permisos')) {
+      mensajeError += '. Por favor haz click nuevamente en "Aceptar" para autorizar.';
+    }
+    
     mostrarNotificacion(
-      " Visita aceptada, pero no se pudo agregar al calendario automáticamente. Error: " + error.message, 
+      `✅ Visita aceptada en el sistema, pero: ${mensajeError}`, 
       "info"
     );
     

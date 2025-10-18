@@ -6,122 +6,85 @@ class GoogleCalendarService {
         this.tokenClient = null;
         this.gapiInited = false;
         this.gisInited = false;
-        this.pendingVisita = null;
         this.pendingResolve = null;
         this.pendingReject = null;
     }
 
-    // Inicializar Google APIs - CORREGIDO
+    // Inicializar Google APIs - VERSIÓN SIMPLIFICADA
     async initializeGoogleApis() {
+        if (this.gapiInited && this.gisInited) {
+            return;
+        }
+
+        // Cargar Google API Client
+        await this.loadScript('https://apis.google.com/js/api.js');
+        await new Promise((resolve) => gapi.load('client', resolve));
+        await gapi.client.init({});
+        
+        // Cargar Google Identity Services
+        await this.loadScript('https://accounts.google.com/gsi/client');
+        
+        // Configurar token client SIN redirect_uri problemático
+        this.tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: GOOGLE_CLIENT_ID,
+            scope: SCOPES,
+            callback: (response) => {
+                this.handleTokenResponse(response);
+            },
+            error_callback: (error) => {
+                console.error('Error en OAuth:', error);
+                if (this.pendingReject) {
+                    this.pendingReject(new Error('Error de autenticación: ' + error.message));
+                }
+            }
+        });
+
+        this.gapiInited = true;
+        this.gisInited = true;
+    }
+
+    // Cargar script genérico
+    loadScript(src) {
         return new Promise((resolve, reject) => {
-            if (this.gapiInited && this.gisInited) {
+            if (document.querySelector(`script[src="${src}"]`)) {
                 resolve();
                 return;
             }
 
-            // Cargar Google API Client - CORREGIDO
-            const loadGapi = () => {
-                return new Promise((resolveGapi) => {
-                    if (window.gapi) {
-                        gapi.load('client', async () => {
-                            try {
-                                await gapi.client.init({});
-                                resolveGapi();
-                            } catch (error) {
-                                reject(error);
-                            }
-                        });
-                    } else {
-                        const gapiScript = document.createElement('script');
-                        gapiScript.src = 'https://apis.google.com/js/api.js';
-                        gapiScript.onload = () => {
-                            gapi.load('client', async () => {
-                                try {
-                                    await gapi.client.init({});
-                                    resolveGapi();
-                                } catch (error) {
-                                    reject(error);
-                                }
-                            });
-                        };
-                        gapiScript.onerror = () => reject(new Error('Error cargando Google API'));
-                        document.head.appendChild(gapiScript);
-                    }
-                });
-            };
-
-            // Cargar Google Identity Services - CORREGIDO
-            const loadGis = () => {
-                return new Promise((resolveGis) => {
-                    if (window.google) {
-                        this.initializeTokenClient();
-                        resolveGis();
-                    } else {
-                        const gisScript = document.createElement('script');
-                        gisScript.src = 'https://accounts.google.com/gsi/client';
-                        gisScript.onload = () => {
-                            this.initializeTokenClient();
-                            resolveGis();
-                        };
-                        gisScript.onerror = () => reject(new Error('Error cargando Google Identity Services'));
-                        document.head.appendChild(gisScript);
-                    }
-                });
-            };
-
-            // Inicializar token client - NUEVO MÉTODO
-            this.initializeTokenClient = () => {
-                this.tokenClient = google.accounts.oauth2.initTokenClient({
-                    client_id: GOOGLE_CLIENT_ID,
-                    scope: SCOPES,
-                    callback: (response) => {
-                        this.handleTokenResponse(response);
-                    },
-                    // PARÁMETROS CLAVE AGREGADOS:
-                    hint: '',
-                    state: 'calendar_auth',
-                });
-            };
-
-            // Ejecutar ambas cargas
-            Promise.all([loadGapi(), loadGis()])
-                .then(() => {
-                    this.gapiInited = true;
-                    this.gisInited = true;
-                    resolve();
-                })
-                .catch(reject);
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
         });
     }
 
-    // Manejar respuesta del token - CORREGIDO
+    // Manejar respuesta del token
     handleTokenResponse(response) {
-        console.log(' Respuesta de token:', response);
+        console.log('Respuesta de token recibida');
         
         if (response.error) {
-            console.error(' Error de autenticación:', response.error);
+            console.error('Error de token:', response.error);
             if (this.pendingReject) {
-                this.pendingReject(new Error(response.error_description || response.error));
+                this.pendingReject(new Error(`Error de autenticación: ${response.error}`));
             }
         } else {
-            console.log(' Token recibido correctamente');
+            console.log('Token obtenido exitosamente');
             gapi.client.setToken(response);
             if (this.pendingResolve) {
                 this.pendingResolve(response);
             }
         }
-        
         this.cleanupPending();
     }
 
-    // Limpiar pendientes - NUEVO MÉTODO
+    // Limpiar pendientes
     cleanupPending() {
-        this.pendingVisita = null;
         this.pendingResolve = null;
         this.pendingReject = null;
     }
 
-    // Obtener token de acceso - CORREGIDO
+    // Obtener token de acceso - VERSIÓN MEJORADA
     async getAccessToken() {
         return new Promise((resolve, reject) => {
             this.pendingResolve = resolve;
@@ -129,6 +92,7 @@ class GoogleCalendarService {
 
             const token = gapi.client.getToken();
             
+            // Verificar si tenemos token válido
             if (token && !this.isTokenExpired(token)) {
                 console.log(' Usando token existente');
                 resolve(token);
@@ -138,55 +102,52 @@ class GoogleCalendarService {
 
             console.log(' Solicitando nuevo token...');
             try {
+                // SOLUCIÓN: Usar over-the-air flow sin redirect_uri
                 this.tokenClient.requestAccessToken({
-                    prompt: 'consent',
-                    // Sin redirect_uri para evitar el error
+                    prompt: 'consent'
                 });
             } catch (error) {
                 this.cleanupPending();
-                reject(error);
+                reject(new Error('Error solicitando token: ' + error.message));
             }
         });
     }
 
-    // Verificar si el token expiró - CORREGIDO
+    // Verificar si el token expiró
     isTokenExpired(token) {
-        if (!token.expires_at) return true;
-        const now = Date.now();
-        return now >= token.expires_at;
+        if (!token.expires_in) return true;
+        // Calcular tiempo de expiración
+        const expiryTime = token.issued_at + (token.expires_in * 1000);
+        return Date.now() >= expiryTime;
     }
 
-    // Crear evento con token - CORREGIDO
-    async crearEventoConToken(visita) {
+    // Crear evento automáticamente - VERSIÓN ROBUSTA
+    async crearEventoAutomatico(visita) {
         try {
-            // Cargar Calendar API explícitamente
+            console.log(' Iniciando creación automática de evento...');
+            
+            // 1. Inicializar APIs
+            await this.initializeGoogleApis();
+            console.log('APIs inicializadas');
+            
+            // 2. Obtener token
+            const token = await this.getAccessToken();
+            console.log(' Token obtenido');
+            
+            // 3. Cargar Calendar API
             await gapi.client.load('calendar', 'v3');
             console.log(' Calendar API cargada');
-
-            const evento = {
-                summary: ` Visita: ${visita.inmuebletitulo}`,
-                location: visita.ubicacion || 'Ubicación por confirmar',
-                description: this.generarDescripcion(visita),
-                start: {
-                    dateTime: new Date(`${visita.fecha}T${visita.hora}:00`).toISOString(),
-                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                },
-                end: {
-                    dateTime: new Date(new Date(`${visita.fecha}T${visita.hora}:00`).getTime() + 60 * 60 * 1000).toISOString(),
-                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                },
-                reminders: {
-                    useDefault: true,
-                },
-            };
-
-            console.log(' Creando evento:', evento);
+            
+            // 4. Crear evento
+            const evento = this.crearObjetoEvento(visita);
+            console.log(' Creando evento...');
+            
             const response = await gapi.client.calendar.events.insert({
                 calendarId: 'primary',
                 resource: evento,
             });
 
-            console.log(' Evento creado automáticamente:', response.result.htmlLink);
+            console.log('Evento creado exitosamente:', response.result.htmlLink);
             return {
                 success: true,
                 eventLink: response.result.htmlLink,
@@ -194,74 +155,79 @@ class GoogleCalendarService {
             };
 
         } catch (error) {
-            console.error(' Error creando evento automático:', error);
-            throw error;
+            console.error(' Error en crearEventoAutomatico:', error);
+            throw this.manejarErrorGoogle(error);
         }
     }
 
-    // Crear evento automáticamente (método principal) - CORREGIDO
-    async crearEventoAutomatico(visita) {
-        try {
-            console.log('Iniciando creación automática de evento...');
-            
-            // 1. Inicializar APIs
-            await this.initializeGoogleApis();
-            console.log('APIs inicializadas');
-            
-            // 2. Obtener token de acceso
-            const token = await this.getAccessToken();
-            console.log(' Token obtenido');
-            
-            // 3. Crear evento
-            const resultado = await this.crearEventoConToken(visita);
-            console.log('Evento creado exitosamente');
-            
-            return resultado;
+    // Crear objeto evento
+    crearObjetoEvento(visita) {
+        const fechaInicio = new Date(`${visita.fecha}T${visita.hora}`);
+        const fechaFin = new Date(fechaInicio.getTime() + 60 * 60 * 1000); // +1 hora
 
-        } catch (error) {
-            console.error('Error en crearEventoAutomatico:', error);
-            
-            // Manejar errores específicos
-            if (error.result && error.result.error) {
-                const googleError = error.result.error;
-                if (googleError.code === 401) {
-                    throw new Error('Autenticación fallida. Por favor inicia sesión nuevamente.');
-                } else if (googleError.code === 403) {
-                    throw new Error('Permisos insuficientes. Se necesita acceso a Google Calendar.');
-                } else {
-                    throw new Error(`Error de Google: ${googleError.message} (Código: ${googleError.code})`);
-                }
-            } else if (error.message && error.message.includes('popup')) {
-                throw new Error('La ventana de autorización fue bloqueada. Por favor permite los popups.');
-            } else {
-                throw error;
+        return {
+            summary: ` Visita: ${visita.inmuebletitulo}`,
+            location: visita.ubicacion || 'Ubicación por confirmar',
+            description: this.generarDescripcion(visita),
+            start: {
+                dateTime: fechaInicio.toISOString(),
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            },
+            end: {
+                dateTime: fechaFin.toISOString(),
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            },
+            reminders: {
+                useDefault: true,
+            },
+        };
+    }
+
+    // Manejar errores de Google
+    manejarErrorGoogle(error) {
+        console.error('Error detallado de Google:', error);
+    
+        if (error.result && error.result.error) {
+            const googleError = error.result.error;
+            switch (googleError.code) {
+                case 401:
+                    return new Error(' Sesión expirada. Por favor inicia sesión nuevamente.');
+                case 403:
+                    return new Error(' Sin permisos para acceder a Google Calendar.');
+                case 409:
+                    return new Error(' El evento ya existe en el calendario.');
+                default:
+                    return new Error(` Error de Google: ${googleError.message}`);
             }
+        } else if (error.message && error.message.includes('popup')) {
+            return new Error('Ventana bloqueada. Permite popups para autorizar.');
+        } else {
+            return error;
         }
     }
 
     generarDescripcion(visita) {
-        return `VISITA PROGRAMADA
+        return ` VISITA PROGRAMADA - ARQOS
 
- INFORMACIÓN DEL INMUEBLE:
+INFORMACIÓN:
 • Propiedad: ${visita.inmuebletitulo}
 • Precio: $${visita.inmuebleprecio || 'No especificado'}
 • Tipo: ${visita.tipovisita}
 
- DETALLES DE LA VISITA:
+ DETALLES:
 • Fecha: ${visita.fecha}
 • Hora: ${visita.hora}
-• Estado: ${visita.estado}
 • Ubicación: ${visita.ubicacion || 'Por confirmar'}
 
  NOTAS:
 ${visita.descripcion || 'Sin notas adicionales'}
 
 ---
-Sistema ARQOS
+Creado automáticamente por ARQOS
 `.trim();
     }
 
-    // Verificar si está autenticado
+    // Verificar autenticación
     isAuthenticated() {
         const token = gapi.client.getToken();
         return token !== null && !this.isTokenExpired(token);
@@ -270,23 +236,11 @@ Sistema ARQOS
     // Cerrar sesión
     logout() {
         const token = gapi.client.getToken();
-        if (token !== null) {
+        if (token) {
             google.accounts.oauth2.revoke(token.access_token);
-            gapi.client.setToken('');
-        }
-    }
-
-    // Verificar estado de autenticación
-    async checkAuthStatus() {
-        try {
-            await this.initializeGoogleApis();
-            return this.isAuthenticated();
-        } catch (error) {
-            console.error('Error verificando autenticación:', error);
-            return false;
+            gapi.client.setToken(null);
         }
     }
 }
 
-// Crear instancia global
 export const googleCalendarService = new GoogleCalendarService();
