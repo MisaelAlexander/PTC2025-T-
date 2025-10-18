@@ -129,4 +129,31 @@ export async function obtenerVisitasPorInmueble(id, page = 0, size = 10) {
   }
 }
 
+/*Funcion de mandar la visita a google calendar:D */
 
+// 1 Espero que funcione
+//2 Lo que hace esto es amndar la
+export async function generarEnlaceGoogleCalendar(visita) 
+{
+  //Formatear la fecha y hora de inicio y fin para google calendar
+  const fechaInicio = new Date(`${visita.fecha}T${visita.hora}`);
+  const fechaFin = new Date(fechaInicio.getTime() + 60 * 60 * 1000); // +1 hora por defecto
+
+  const formatearFecha = (fecha) => {
+        return fecha.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  };
+
+  //Darle formato apra que se guarde en google calendar
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    /*Texto de la visita */
+    text: `Visita: ${visita.inmuebletitulo}`,
+        /*Duracion*/
+    dates: `${formatearFecha(fechaInicio)}/${formatearFecha(fechaFin)}`,
+        /*Descripcion de la visita (Solo si hay) */
+    details: visita.descripcion  || 'No hay descripción',
+        /*Texto de la visita (Direccion ingresada por el vendedor)*/
+    location: visita.ubicacion  || 'No hay dirección',
+  });
+  return `https://calendar.google.com/calendar/render?${params}`;
+}
