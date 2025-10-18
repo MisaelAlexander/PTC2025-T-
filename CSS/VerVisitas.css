@@ -660,7 +660,6 @@ body {
 
 /* Icono del calendario */
 .btn-calendar::after {
-    content: '📅';
     font-size: 1rem;
 }
 
