@@ -61,13 +61,24 @@ function confirmarAccion(mensaje) {
 // ---------- FUNCIÓN PARA ACEPTAR VISITA AUTOMÁTICAMENTE ----------
 async function aceptarVisitaConCalendar(visita) {
   try {
-    console.log('Aceptando visita y creando evento en calendario...');
+    console.log('Aceptando visita...');
     
     // 1. Primero actualizar el estado en la base de datos
     await actualizarVisita(visita.idvisita, { ...visita, idestado: 1 });
     console.log('Estado actualizado en BD');
     
-    // 2. Intentar crear evento automáticamente
+    // 2. Verificar si Google APIs están disponibles
+    const apisDisponibles = await googleCalendarService.initializeGoogleApis();
+    
+    if (!apisDisponibles) {
+      mostrarNotificacion(
+        "Visita aceptada (Google Calendar no disponible)",
+        "info"
+      );
+      return { success: true, method: 'no_calendar' };
+    }
+    
+    // 3. Intentar crear evento automáticamente
     try {
       const resultado = await googleCalendarService.crearEventoAutomatico(visita);
       
@@ -79,56 +90,34 @@ async function aceptarVisitaConCalendar(visita) {
       return resultado;
       
     } catch (autoError) {
-      console.warn('Falló creación automática, intentando método manual:', autoError);
+      console.warn('Falló creación automática:', autoError);
       
-      // 3. Si falla la autenticación automática, ofrecer opción manual
-      if (autoError.message === 'popup_blocked') {
-        const enlaceManual = googleCalendarService.generarEnlaceManual(visita);
-        
-        const usarManual = await confirmarAccion(
-          `Para agregar automáticamente al calendario, necesitamos que autorices la aplicación.\n\n¿Prefieres abrir Google Calendar manualmente para agregar el evento?`
-        );
-        
-        if (usarManual) {
-          window.open(enlaceManual, '_blank', 'noopener,noreferrer');
-          mostrarNotificacion(
-            "Visita aceptada. Se abrió Google Calendar para agregar el evento manualmente.", 
-            "info"
-          );
-        } else {
-          mostrarNotificacion(
-            "Visita aceptada. Puedes agregarla a tu calendario más tarde.", 
-            "info"
-          );
-        }
-        
-        return { success: true, method: 'manual' };
-      }
+      // Ofrecer opción manual como fallback
+      const enlaceManual = googleCalendarService.generarEnlaceManual(visita);
       
-      // 4. Si es otro error, mostrar mensaje específico
-      let mensajeError = "Error al crear evento en calendario";
-      if (autoError.message.includes('Permisos')) {
-        mensajeError = "Se necesitan permisos de Google Calendar";
-      } else if (autoError.message.includes('Token')) {
-        mensajeError = "Error de autenticación con Google";
-      }
-      
-      mostrarNotificacion(
-        `Visita aceptada, pero ${mensajeError.toLowerCase()}`, 
-        "info"
+      const usarManual = await confirmarAccion(
+        `¿Quieres abrir Google Calendar para agregar el evento manualmente?\n\nFecha: ${visita.fecha} ${visita.hora}\nPropiedad: ${visita.inmuebletitulo}`
       );
       
-      return { success: true, method: 'failed', error: autoError.message };
+      if (usarManual) {
+        window.open(enlaceManual, '_blank', 'noopener,noreferrer');
+        mostrarNotificacion(
+          "Visita aceptada. Se abrió Google Calendar para agregar el evento.", 
+          "info"
+        );
+      } else {
+        mostrarNotificacion(
+          "Visita aceptada. Puedes agregarla a tu calendario más tarde.", 
+          "info"
+        );
+      }
+      
+      return { success: true, method: 'manual' };
     }
     
   } catch (error) {
-    console.error('❌ Error general en aceptarVisitaConCalendar:', error);
-    
-    mostrarNotificacion(
-      "❌ Error al procesar la visita", 
-      "error"
-    );
-    
+    console.error('Error general:', error);
+    mostrarNotificacion("Error al procesar la visita", "error");
     throw error;
   }
 }
@@ -388,20 +377,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ==================== INICIALIZAR GOOGLE APIS ====================
 async function inicializarGoogleApis() {
   try {
-    console.log(' Inicializando Google APIs...');
+    console.log('Inicializando Google APIs...');
     await googleCalendarService.initializeGoogleApis();
     console.log('Google APIs inicializadas correctamente');
-    
-    // Verificar autenticación existente
-    const isAuthenticated = await googleCalendarService.checkAuth();
-    if (isAuthenticated) {
-      console.log(' Usuario ya autenticado en Google');
-    }
-    
     return true;
   } catch (error) {
     console.warn('No se pudieron inicializar Google APIs:', error);
-    // No bloquear la aplicación si falla Google Calendar
+    
+    // Mostrar mensaje informativo al usuario
+    mostrarNotificacion(
+      "Google Calendar no está disponible temporalmente. Las visitas se aceptarán sin calendario.",
+      "info"
+    );
+    
     return false;
   }
 }
