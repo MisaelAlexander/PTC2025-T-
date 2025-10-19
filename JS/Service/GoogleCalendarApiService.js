@@ -5,53 +5,94 @@ class GoogleCalendarService {
     constructor() {
         this.accessToken = null;
         this.isAuthenticated = false;
+        this.gapiLoaded = false;
+        this.initializing = false;
     }
+    
+async initializeGoogleApis() {
+        if (this.gapiLoaded) return true;
+        if (this.initializing) {
+            // Esperar si ya se está inicializando
+            return new Promise(resolve => {
+                const check = () => {
+                    if (this.gapiLoaded) resolve(true);
+                    else setTimeout(check, 100);
+                };
+                check();
+            });
+        }
 
-    // NUEVO ENFOQUE: Usar Google API Client directamente sin GIS problemático
-    async initializeGapi() {
+        this.initializing = true;
+        
         return new Promise((resolve, reject) => {
+            // Si ya está cargado gapi
             if (window.gapi && window.gapi.client) {
-                resolve();
+                this.gapiLoaded = true;
+                this.initializing = false;
+                resolve(true);
                 return;
             }
 
             // Cargar Google API Client
             const script = document.createElement('script');
             script.src = 'https://apis.google.com/js/api.js';
-            script.onload = () => {
-                gapi.load('client:auth2', () => {
-                    gapi.client.init({
-                        clientId: GOOGLE_CLIENT_ID,
-                        scope: SCOPES,
-                        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-                    }).then(() => {
-                        console.log('Google API inicializada correctamente');
-                        resolve();
-                    }).catch(reject);
-                });
+            script.onload = async () => {
+                try {
+                    await gapi.load('client:auth2', async () => {
+                        await gapi.client.init({
+                            clientId: GOOGLE_CLIENT_ID,
+                            scope: SCOPES,
+                            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+                        });
+                        
+                        this.gapiLoaded = true;
+                        this.initializing = false;
+                        console.log(' Google API Client inicializado correctamente');
+                        resolve(true);
+                    });
+                } catch (error) {
+                    this.initializing = false;
+                    console.error(' Error inicializando gapi.client:', error);
+                    reject(error);
+                }
             };
-            script.onerror = reject;
+            
+            script.onerror = () => {
+                this.initializing = false;
+                reject(new Error('Failed to load Google API script'));
+            };
+            
             document.head.appendChild(script);
         });
     }
-
     // Autenticación con Google Auth2 (más estable)
     async authenticate() {
         try {
-            await this.initializeGapi();
+            console.log('Iniciando autenticación...');
             
+            // 1. Asegurar que gapi esté inicializado
+            await this.initializeGoogleApis();
+            
+            // 2. Obtener instancia de auth
             const auth2 = gapi.auth2.getAuthInstance();
+            if (!auth2) {
+                throw new Error('Google Auth2 no disponible');
+            }
+
+            // 3. Verificar si ya está autenticado
             const user = auth2.currentUser.get();
-            
             if (user.isSignedIn()) {
                 this.accessToken = user.getAuthResponse().access_token;
                 this.isAuthenticated = true;
+                console.log(' Usuario ya autenticado');
                 return this.accessToken;
             }
 
-            // Iniciar flujo de autenticación
+            // 4. Iniciar flujo de autenticación
+            console.log('Solicitando autenticación...');
             const googleUser = await auth2.signIn({
-                prompt: 'consent'
+                prompt: 'consent',
+                ux_mode: 'popup'
             });
 
             this.accessToken = googleUser.getAuthResponse().access_token;
@@ -63,56 +104,59 @@ class GoogleCalendarService {
         } catch (error) {
             console.error(' Error en autenticación:', error);
             
-            if (error.error === 'popup_closed_by_user') {
+            if (error.error === 'popup_closed_by_user' || error.error === 'access_denied') {
                 throw new Error('popup_blocked');
             }
-            throw error;
+            
+            throw new Error(`Autenticación fallida: ${error.message || error}`);
         }
     }
 
+
     // Crear evento usando Fetch API con el token
-    async crearEventoAutomatico(visita) {
+ async crearEventoAutomatico(visita) {
         try {
-            console.log(' Iniciando creación de evento...');
+            console.log(' Iniciando creación automática de evento...');
             
             // 1. Autenticar
             const token = await this.authenticate();
             
-            // 2. Crear evento
+            // 2. Preparar evento
             const evento = this.crearObjetoEvento(visita);
+            console.log(' Evento preparado:', evento);
             
-            const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(evento)
+            // 3. Crear evento usando gapi.client (más confiable)
+            const response = await gapi.client.calendar.events.insert({
+                calendarId: 'primary',
+                resource: evento
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`Google API: ${errorData.error?.message || 'Error desconocido'}`);
-            }
-
-            const result = await response.json();
+            console.log(' Evento creado exitosamente:', response.result.htmlLink);
             
-            console.log(' Evento creado exitosamente:', result.htmlLink);
             return {
                 success: true,
-                eventLink: result.htmlLink,
-                eventId: result.id,
+                eventLink: response.result.htmlLink,
+                eventId: response.result.id,
                 method: 'automatic'
             };
 
         } catch (error) {
-            console.error(' Error creando evento:', error);
+            console.error(' Error creando evento automático:', error);
             
+            // Manejar errores específicos
             if (error.message === 'popup_blocked') {
                 throw new Error('popup_blocked');
             }
             
-            throw error;
+            if (error.status === 403) {
+                throw new Error('Permisos insuficientes para Google Calendar');
+            }
+            
+            if (error.status === 401) {
+                throw new Error('Token de autenticación inválido');
+            }
+            
+            throw new Error(`Error al crear evento: ${error.message}`);
         }
     }
 
